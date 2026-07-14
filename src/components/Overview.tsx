@@ -1,11 +1,14 @@
 import type { ReactNode } from "react";
+import type { PillStatus } from "../types";
+import { RepoBarChart, StatusBar } from "./charts";
 
 interface OverviewProps {
   bullets: ReactNode[];
   repoTally: { repo: string; count: number }[];
+  statusBreakdown: { label: string; count: number; variant: PillStatus }[];
 }
 
-export function Overview({ bullets, repoTally }: OverviewProps) {
+export function Overview({ bullets, repoTally, statusBreakdown }: OverviewProps) {
   return (
     <div className="overview">
       <h2>The short version</h2>
@@ -20,12 +23,16 @@ export function Overview({ bullets, repoTally }: OverviewProps) {
         with every PR linked inline where it mattered. Smaller work stays in the tables
         further down.
       </p>
-      <div className="repo-tally">
-        {repoTally.map((r) => (
-          <span className="repo-chip" key={r.repo}>
-            {r.repo} — <b>{r.count}</b> PR{r.count === 1 ? "" : "s"}
-          </span>
-        ))}
+
+      <div className="mini-dash">
+        <div className="mini-dash-col">
+          <p className="mini-dash-label">67 PRs by status</p>
+          <StatusBar segments={statusBreakdown} />
+        </div>
+        <div className="mini-dash-col">
+          <p className="mini-dash-label">By repo</p>
+          <RepoBarChart rows={repoTally} />
+        </div>
       </div>
     </div>
   );

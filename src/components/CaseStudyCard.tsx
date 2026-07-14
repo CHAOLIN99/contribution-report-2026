@@ -1,10 +1,10 @@
-import { Fragment } from "react";
 import type { CaseStudy } from "../types";
 import { PrTable } from "./PrTable";
+import { CompareBar } from "./charts";
 
 export function CaseStudyCard({ study }: { study: CaseStudy }) {
   return (
-    <div className="case">
+    <div className="case" id={study.id}>
       <div className="case-head">
         <h3>{study.title}</h3>
         <span className="case-ticket">{study.ticket}</span>
@@ -20,30 +20,25 @@ export function CaseStudyCard({ study }: { study: CaseStudy }) {
         </p>
       ))}
 
-      <div className="flow">
-        {study.flow.map((step, i) => (
-          <div className={`flow-step${step.setBack ? " set-back" : ""}`} key={i}>
-            <div className="fdate">{step.date}</div>
-            <div className="flabel">{step.label}</div>
-            <p>{step.body}</p>
-          </div>
-        ))}
-      </div>
-
       {study.metricFlow && (
         <div className="metric-flow">
-          {study.metricFlow.items.map((item, i) => (
-            <Fragment key={item.label}>
-              {i > 0 && <span className="mf-arrow">→</span>}
-              <div className="mf-item">
-                <div className={`mf-n${item.variant ? ` ${item.variant}` : ""}`}>{item.value}</div>
-                <div className="mf-l">{item.label}</div>
-              </div>
-            </Fragment>
-          ))}
+          <CompareBar items={study.metricFlow.items} />
           {study.metricFlow.note && <div className="mf-note">{study.metricFlow.note}</div>}
         </div>
       )}
+
+      <details className="flow-details">
+        <summary>See the full investigation ({study.flow.length} steps)</summary>
+        <div className="flow">
+          {study.flow.map((step, i) => (
+            <div className={`flow-step${step.setBack ? " set-back" : ""}`} key={i}>
+              <div className="fdate">{step.date}</div>
+              <div className="flabel">{step.label}</div>
+              <p>{step.body}</p>
+            </div>
+          ))}
+        </div>
+      </details>
 
       <div className="result-callout">{study.result}</div>
 

@@ -24,6 +24,8 @@ export interface MetricFlowItem {
   value: string;
   label: string;
   variant?: "before" | "after";
+  /** Numeric magnitude for the visual compare bar; log-scaled when the ratio is large. */
+  raw?: number;
 }
 
 export interface MetricFlow {
@@ -32,6 +34,8 @@ export interface MetricFlow {
 }
 
 export interface CaseStudy {
+  id: string;
+  navLabel: string;
   title: string;
   ticket: string;
   lead: ReactNode;

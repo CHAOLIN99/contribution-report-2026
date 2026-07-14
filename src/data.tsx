@@ -23,6 +23,12 @@ export const repoTally = [
   { repo: "data-airflow", count: 1 },
 ];
 
+export const statusBreakdown = [
+  { label: "Merged", count: 47, variant: "merged" as const },
+  { label: "Open", count: 11, variant: "open" as const },
+  { label: "Closed", count: 9, variant: "unmerged" as const },
+];
+
 export const overviewBullets = [
   <>
     <b>Partitioned a runaway Postgres table (PI-7372)</b> to stop it driving
@@ -58,8 +64,8 @@ const PR = (repo: string, n: number) =>
 // ---- Case 1: partitioning ----
 const case1MetricFlow: MetricFlow = {
   items: [
-    { value: "39M / 47GB", label: "before", variant: "before" },
-    { value: "1.6M / 7.7GB", label: "after (triggered only)", variant: "after" },
+    { value: "39M / 47GB", label: "before", variant: "before", raw: 39_000_000 },
+    { value: "1.6M / 7.7GB", label: "after (triggered only)", variant: "after", raw: 1_600_000 },
     { value: "1 of 16", label: "partitions per query" },
   ],
   note: (
@@ -168,16 +174,26 @@ const case4Prs: PrRow[] = [
   },
 ];
 
+const case2MetricFlow: MetricFlow = {
+  items: [
+    { value: "~217,000", label: "sequential scan cost", variant: "before", raw: 217_000 },
+    { value: "~19", label: "index-scan plan cost", variant: "after", raw: 19 },
+  ],
+  note: <>~11,400× cheaper, read from the query's own EXPLAIN output</>,
+};
+
 const case3MetricFlow: MetricFlow = {
   items: [
-    { value: "~720 + ~360", label: "workflow + terraform lines", variant: "before" },
-    { value: "0", label: "deleted, redundant w/ Datadog", variant: "after" },
+    { value: "~720 + ~360", label: "workflow + terraform lines", variant: "before", raw: 1080 },
+    { value: "0", label: "deleted, redundant w/ Datadog", variant: "after", raw: 0 },
     { value: "45 → 15", label: "endpoints, ranked by traffic" },
   ],
 };
 
 export const cases: CaseStudy[] = [
   {
+    id: "partitioning",
+    navLabel: "ACU blow-up",
     title: "Partitioning sensor_version_state to stop an ACU blow-up",
     ticket: "PI-7372",
     lead: (
@@ -293,6 +309,8 @@ export const cases: CaseStudy[] = [
     ),
   },
   {
+    id: "claim-path",
+    navLabel: "Query-plan fix",
     title: "A query-plan regression on the claim path",
     ticket: "actions-processor",
     lead: (
@@ -382,6 +400,7 @@ export const cases: CaseStudy[] = [
         ),
       },
     ],
+    metricFlow: case2MetricFlow,
     result: (
       <>
         <b>Result:</b> the claim query now runs an index scan instead of a
@@ -393,6 +412,8 @@ export const cases: CaseStudy[] = [
     ),
   },
   {
+    id: "deploy-gate",
+    navLabel: "Deploy gate",
     title: "A deploy-gate suite — with Datadog picking what to test",
     ticket: "sensors-api-test-suite",
     lead: (
@@ -527,6 +548,8 @@ export const cases: CaseStudy[] = [
     ),
   },
   {
+    id: "org-access",
+    navLabel: "Org access",
     title: "Org & tenancy access hardening",
     ticket: "PI-6651 → PI-7873 / 7901 / 7920",
     lead: (

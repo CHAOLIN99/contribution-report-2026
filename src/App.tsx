@@ -3,7 +3,22 @@ import { Overview } from "./components/Overview";
 import { CaseStudyCard } from "./components/CaseStudyCard";
 import { ThemeSectionCard } from "./components/ThemeSectionCard";
 import { RepoBreakdownTable } from "./components/RepoBreakdownTable";
-import { stats, repoTally, overviewBullets, cases, themes, repoBreakdown } from "./data";
+import { JumpNav } from "./components/charts";
+import {
+  stats,
+  repoTally,
+  statusBreakdown,
+  overviewBullets,
+  cases,
+  themes,
+  repoBreakdown,
+} from "./data";
+
+const navItems = [
+  { id: "overview", label: "Overview" },
+  ...cases.map((c) => ({ id: c.id, label: c.navLabel })),
+  { id: "other-initiatives", label: "Other work" },
+];
 
 export function App() {
   return (
@@ -18,24 +33,27 @@ export function App() {
           report walks the four investigations that drove most of them — what broke, how I
           found the cause, what I shipped, and what changed.
         </p>
-        <span className="read-time">≈ 4 min read</span>
+        <span className="read-time">≈ 3 min read · expand any case for the full trail</span>
+        <JumpNav items={navItems} />
       </header>
 
       <StatGrid stats={stats} />
 
-      <Overview bullets={overviewBullets} repoTally={repoTally} />
+      <div id="overview">
+        <Overview bullets={overviewBullets} repoTally={repoTally} statusBreakdown={statusBreakdown} />
+      </div>
 
       <h2 className="section-title">Deep dives</h2>
       <p className="section-sub">
         The four threads that drove most of this window's design, investigation, and cross-repo
-        coordination.
+        coordination — each collapsed to the essentials, with the full trail one click away.
       </p>
 
       {cases.map((study) => (
-        <CaseStudyCard study={study} key={study.title} />
+        <CaseStudyCard study={study} key={study.id} />
       ))}
 
-      <h2 className="section-title" style={{ marginTop: 34 }}>
+      <h2 className="section-title" id="other-initiatives" style={{ marginTop: 34 }}>
         Other initiatives
       </h2>
       <p className="section-sub">
