@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>CHAOLIN99 — Contribution Report, May–Jul 2026</title>
 <style>
   :root {
@@ -18,6 +19,8 @@
     --unmerged-fg: #8a4a45;
     --add: #2c6b3c;
     --del: #a34a3f;
+    --signal: #9a5b1f;
+    --signal-bg: #f5e8d8;
     --shadow: 0 1px 2px rgba(18,25,27,0.04), 0 8px 24px rgba(18,25,27,0.05);
   }
   @media (prefers-color-scheme: dark) {
@@ -39,6 +42,8 @@
       --unmerged-fg: #e29b93;
       --add: #7fd399;
       --del: #e29b93;
+      --signal: #e3b078;
+      --signal-bg: #332a1c;
       --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
     }
   }
@@ -50,6 +55,7 @@
     --open-bg: #35301c; --open-fg: #e3bd6f;
     --unmerged-bg: #35201f; --unmerged-fg: #e29b93;
     --add: #7fd399; --del: #e29b93;
+    --signal: #e3b078; --signal-bg: #332a1c;
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
   }
   :root[data-theme="light"] {
@@ -60,6 +66,7 @@
     --open-bg: #f3e9d3; --open-fg: #8a611a;
     --unmerged-bg: #f1e2e1; --unmerged-fg: #8a4a45;
     --add: #2c6b3c; --del: #a34a3f;
+    --signal: #9a5b1f; --signal-bg: #f5e8d8;
     --shadow: 0 1px 2px rgba(18,25,27,0.04), 0 8px 24px rgba(18,25,27,0.05);
   }
 
@@ -102,7 +109,7 @@
   .subhead {
     color: var(--muted);
     font-size: 15.5px;
-    max-width: 62ch;
+    max-width: 66ch;
     margin: 0;
   }
   .subhead code {
@@ -183,8 +190,145 @@
     letter-spacing: 0.09em;
     font-weight: 600;
     color: var(--faint);
-    margin: 0 0 18px;
+    margin: 0 0 6px;
   }
+  p.section-sub {
+    color: var(--faint);
+    font-size: 13.5px;
+    margin: 0 0 18px;
+    max-width: 68ch;
+  }
+
+  /* ---- case studies ---- */
+  .case {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 26px 28px 24px;
+    margin-bottom: 22px;
+    box-shadow: var(--shadow);
+  }
+  .case-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 2px;
+  }
+  .case-head h3 {
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 21px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.005em;
+  }
+  .case-ticket {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .case-signal {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--signal-bg);
+    color: var(--signal);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 14px 0 18px;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .case-signal .tag {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-weight: 700;
+    flex-shrink: 0;
+    padding-top: 1.5px;
+  }
+  .case p.narrative { font-size: 14.5px; color: var(--text); max-width: 74ch; margin: 0 0 16px; }
+  .case p.narrative b { color: var(--text); }
+
+  .metric-flow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin: 4px 0 20px;
+    flex-wrap: wrap;
+  }
+  .metric-flow .mf-item { display: flex; flex-direction: column; }
+  .metric-flow .mf-n {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 19px;
+    font-weight: 600;
+  }
+  .metric-flow .mf-n.before { color: var(--del); }
+  .metric-flow .mf-n.after { color: var(--add); }
+  .metric-flow .mf-l { font-size: 10.5px; color: var(--faint); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 1px; }
+  .metric-flow .mf-arrow { color: var(--faint); font-size: 18px; }
+  .metric-flow .mf-note { font-size: 12.5px; color: var(--muted); margin-left: auto; }
+
+  .flow {
+    border-left: 2px solid var(--border);
+    margin: 0 0 18px 7px;
+    padding-left: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+  }
+  .flow-step { position: relative; }
+  .flow-step::before {
+    content: '';
+    position: absolute;
+    left: -27px;
+    top: 4px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--surface);
+  }
+  .flow-step.set-back::before { background: var(--del); }
+  .flow-step .fdate {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    color: var(--faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .flow-step .flabel { font-weight: 600; font-size: 14.5px; margin: 2px 0 3px; color: var(--text); }
+  .flow-step p { margin: 0; font-size: 13.5px; color: var(--muted); max-width: 66ch; }
+  .flow-step a.pr-ref {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .flow-step a.pr-ref:hover { text-decoration: underline; }
+
+  .result-callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 13.5px;
+    margin: 2px 0 4px;
+    color: var(--text);
+  }
+  .result-callout b { color: var(--accent); }
 
   section.theme {
     background: var(--surface);
@@ -209,6 +353,7 @@
   }
 
   .table-wrap { overflow-x: auto; margin: 0 -22px; padding: 0 22px 14px; }
+  .case .table-wrap { margin: 0 -28px; padding: 0 28px 4px; }
   table { border-collapse: collapse; width: 100%; min-width: 600px; }
   thead th {
     text-align: left;
@@ -263,6 +408,15 @@
   .pill.open { background: var(--open-bg); color: var(--open-fg); }
   .pill.unmerged { background: var(--unmerged-bg); color: var(--unmerged-fg); }
 
+  p.evidence-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--faint);
+    margin: 20px 0 8px;
+    font-weight: 600;
+  }
+
   .repo-summary {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -295,7 +449,7 @@
   <header class="masthead">
     <p class="eyebrow">Contribution report · Pattern</p>
     <h1>CHAOLIN99 — May 1 to Jul 14, 2026</h1>
-    <p class="subhead">All pull requests authored by <code>CHAOLIN99</code> across <code>agents</code>, <code>pi-toolsmith</code>, <code>sensors</code>, and <code>data-airflow</code>, compiled via GitHub search (<code>author:CHAOLIN99 created:&gt;=2026-05-01</code>) and grouped by initiative.</p>
+    <p class="subhead">67 pull requests across <code>agents</code>, <code>pi-toolsmith</code>, <code>sensors</code>, and <code>data-airflow</code>. Rather than list PRs in isolation, this report walks the four investigations that generated the most of them end to end: what broke or was at risk, how it was diagnosed, what shipped and in what order, and what changed as a result.</p>
   </header>
 
   <div class="stat-grid">
@@ -309,8 +463,8 @@
 
   <div class="overview">
     <h2>Overview</h2>
-    <p>Since the start of May, CHAOLIN99's work has centered almost entirely on the <b>sensors</b> platform (58 of 67 PRs), spanning both the sensors-api/sensors-engine application code and its Terraform-managed infrastructure. The largest through-line is a sustained <b>org/tenancy access-control hardening effort</b> — closing scoping gaps on read and write routes, fixing case-sensitivity bugs in org-id checks, and documenting enforcement across every M2M-scoped route — which is still active as of the most recent PR (#1089, Jul 13). Running in parallel was a from-scratch build-out of the <b>Bruno-based stage→prod deploy gate</b> (14 PRs), which went from an initial automated suite in mid-May to a hardened, alerting-integrated gate by early July.</p>
-    <p>A second major cluster is <b>reliability work on the actions-processor / triggered-actions claim path</b> and the underlying <b>sensor_version_state table partitioning</b> (PI-7372), including several same-week hotfix/revert cycles that suggest this was a delicate, iteratively-debugged migration. Cross-repo work connected <b>sensors-api to the MCP surface used by agents</b> (org/brand/version header propagation, coverage CRUD, provenance envelopes) and separately gated <b>source-app lineage</b> and <b>Pattern-user-only recommendations</b> at both the sensors-api and agents layers — the latter two show a pattern of PRs opened in pairs across repos that were later closed/reworked rather than merged as originally split.</p>
+    <p>Four investigations account for the bulk of this window's work. A hot-table partitioning project (PI-7372) stopped a runaway Postgres table from driving Aurora ACU pressure in staging and prod. A parallel reliability thread on the same claim-path table diagnosed and fixed a query-plan regression using <code>EXPLAIN</code> output rather than guesswork. A from-scratch deploy-gate testing suite replaced a proposed home-grown monitoring stack after a Datadog audit showed the monitoring already existed — and that same Datadog audit picked which 15 of ~45 sensors-api endpoints were worth testing at all. And a months-long org/tenancy access-control hardening effort closed scoping gaps route by route, catching and fixing a production regression of its own along the way.</p>
+    <p>Each is written up below as signal → diagnosis → what shipped → result, with every PR referenced inline at the point it mattered. The remaining, smaller initiatives keep the original table format further down.</p>
     <div class="repo-tally">
       <span class="repo-chip">sensors — <b>58</b> PRs</span>
       <span class="repo-chip">agents — <b>5</b> PRs</span>
@@ -319,84 +473,239 @@
     </div>
   </div>
 
-  <h2 class="section-title">By initiative</h2>
+  <h2 class="section-title">Deep dives</h2>
+  <p class="section-sub">The four threads that drove most of this window's design, investigation, and cross-repo coordination.</p>
 
-  
-    <section class="theme">
-      <h3>Org & tenancy access hardening</h3>
-      <p class="theme-desc">A months-long security-audit thread: closing org-scoping gaps across sensors-api read/write routes, case-insensitive org-id comparisons, staging enforcement, and documentation of every M2M-scoped route.</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
-          <tbody>
-          <tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1089">#1089</a></td>
-          <td class="title">fix(sensors-api): allow omitted org_id on wildcard-permitted routes (PI-7920)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+22</span> <span class="del">-0</span></td>
-          <td class="date">Jul 13</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1088">#1088</a></td>
-          <td class="title">terraform(sensors-api): enable org access enforcement in staging</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+1</span> <span class="del">-0</span></td>
-          <td class="date">Jul 13</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1084">#1084</a></td>
-          <td class="title">PI-7901: enforce org scope on read endpoints (flag-independent)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+1614</span> <span class="del">-251</span></td>
-          <td class="date">Jul 8</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1077">#1077</a></td>
-          <td class="title">PI-7873: org-scoped GET /api/sensors/:sensorId/resources (flag-independent)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+656</span> <span class="del">-39</span></td>
-          <td class="date">Jul 6</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1076">#1076</a></td>
-          <td class="title">PI-7874: case-insensitive org-id comparison (gate + rowOrgAccess)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+65</span> <span class="del">-4</span></td>
-          <td class="date">Jul 6</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1020">#1020</a></td>
-          <td class="title">docs(sensors-api): document org_id enforcement on all 11 M2M-scoped routes (PI-7092)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+603</span> <span class="del">-23</span></td>
-          <td class="date">Jun 15</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1040">#1040</a></td>
-          <td class="title">PI-5083: Migrate sensor export latest assets to org_id tenancy</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+761</span> <span class="del">-49</span></td>
-          <td class="date">Jun 19</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1001">#1001</a></td>
-          <td class="title">feat(sensors-api): remap staging org_ids to prod for data queries (PI-6650)</td>
-          <td class="pill-cell"><span class="pill open">Open</span></td>
-          <td class="loc"><span class="add">+487</span> <span class="del">-43</span></td>
-          <td class="date">Jun 3</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1042">#1042</a></td>
-          <td class="title">fix(sensors-api): PI-5941 GET /api/sources collection-scoped discoverability</td>
-          <td class="pill-cell"><span class="pill open">Open</span></td>
-          <td class="loc"><span class="add">+218</span> <span class="del">-21</span></td>
-          <td class="date">Jun 22</td>
-        </tr>
-          </tbody>
-        </table>
+  <!-- CASE 1: PARTITIONING / ACU -->
+  <div class="case">
+    <div class="case-head">
+      <h3>Stopping the ACU blow-up: partitioning sensor_version_state</h3>
+      <span class="case-ticket">PI-7372</span>
+    </div>
+    <div class="case-signal">
+      <span class="tag">Signal</span>
+      <span><code>sensor_version_state</code> had grown to ~39M rows / 47GB and every per-sensor query scanned the whole table. In staging and prod this showed up as Aurora ACU pressure and slow batch-eval writes — the table needed to shrink and the write pattern needed to change, not just get an index.</span>
+    </div>
+    <p class="narrative">The first pass at root cause was a row audit: workers were writing a state row for <b>every</b> sensor evaluation, triggered or not, but only triggered rows had a reader anywhere in the codebase — non-triggered writes were ~93% of write volume for zero downstream consumption. The plan had two parts that had to land in a specific order: (1) partition the existing table by <code>HASH(sensor_id)</code> so per-sensor reads and the bulk expiry/turn-off updates prune to one partition instead of scanning all sixteen, and (2) stop writing non-triggered rows going forward so the lean table stays lean. Both required a live-data cutover with zero tolerance for silently corrupting <code>sensor_version_state</code>, so the migration carried its own schema drift-guard that aborts the swap rather than risk it.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="fdate">Jun 4 · dev-validated</div>
+        <div class="flabel">Ship the partition migration and query changes <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1002">#1002</a></div>
+        <p>HASH(sensor_id) 16-way partition, composite primary key, indexes/FKs cloned from the live table, an information_schema drift guard, and the five call sites (<code>onConflict</code> targets, bulk expiry/turn-off queries) updated to filter by <code>sensor_id</code> so they prune. Merged behind a hold: dev-rehearsed only, production cutover deliberately deferred to its own runbook.</p>
       </div>
-    </section>
+      <div class="flow-step set-back">
+        <div class="fdate">early Jun · cutover attempt #1</div>
+        <div class="flabel">Full-table copy blows the 300s Lambda timeout</div>
+        <p>The one-time <code>INSERT … SELECT</code> to populate the partitioned twin timed out inside the prod db-migration Lambda's 300-second cap (run #836), and a manual multi-hour retry outside the Lambda still didn't finish. Copying all 39M rows was never going to fit the deploy window.</p>
+      </div>
+      <div class="flow-step">
+        <div class="fdate">Jun 9</div>
+        <div class="flabel">Root cause → filter the copy to triggered rows only <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1011">#1011</a></div>
+        <p>Since non-triggered rows have no reader, the one-time copy only needs the ~1.3M triggered rows (~3% of the table), not all 39M. One filter clause turned a copy that couldn't finish into one that comfortably fits the 300s window. Paired with #1008 below so new non-triggered writes don't undo the shrink immediately after cutover.</p>
+      </div>
+      <div class="flow-step set-back">
+        <div class="fdate">Jun 9 · same day</div>
+        <div class="flabel">Cutover attempt #2 — drift guard catches a type mismatch <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1014">#1014</a></div>
+        <p>Prod declares five key columns (<code>sensor_version_state_id</code>, <code>execution_id</code>, etc.) as unbounded <code>varchar</code>; the migration's twin had created them as <code>varchar(255)</code>. The drift guard did its job — it aborted the swap instead of silently truncating data, rolled the transaction back cleanly, and left prod untouched. Fixed by creating the twin's columns unbounded and adding a metadata-only widening pass for any environment with a stale <code>varchar(255)</code> twin already in place.</p>
+      </div>
+      <div class="flow-step">
+        <div class="fdate">Jun 8–9 · coordinated cutover</div>
+        <div class="flabel">Stop the leak going forward <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1008">#1008</a></div>
+        <p>Cutover sequence: pause the batch-eval workers and the expiry-cleanup Lambda → run the filtered migration → verify the partitioned table and row counts → flip <code>SENSOR_STATE_TRIGGERED_ONLY=true</code> in staging and prod tfvars, which makes workers skip non-triggered upserts, hard-delete on turn-off/expiry, and emit <code>batch.states_not_triggered_skipped</code> to Datadog → resume workers only once the flag is confirmed live, so nothing writes non-triggered rows back into the fresh table before the flag takes effect.</p>
+      </div>
+    </div>
+
+    <div class="metric-flow">
+      <div class="mf-item"><div class="mf-n before">39M / 47GB</div><div class="mf-l">before</div></div>
+      <div class="mf-item mf-arrow">→</div>
+      <div class="mf-item"><div class="mf-n after">1.6M / 7.7GB</div><div class="mf-l">after (triggered rows only)</div></div>
+      <div class="mf-item mf-arrow">→</div>
+      <div class="mf-item"><div class="mf-n">1 of 16</div><div class="mf-l">partitions touched per query</div></div>
+      <div class="mf-note">purge script + 24–48h soak, then <code>DROP TABLE sensor_version_state_old</code> to reclaim ~47GB</div>
+    </div>
+    <div class="result-callout"><b>Result:</b> per-sensor reads and bulk expiry/turn-off updates now prune to a single partition instead of scanning all sixteen; the table stopped growing on writes that nothing ever reads; the drift guard proved its worth by catching a real type mismatch before it reached prod data instead of after.</div>
+  </div>
+
+  <!-- CASE 2: CLAIM PATH RELIABILITY -->
+  <div class="case">
+    <div class="case-head">
+      <h3>Triggered-actions claim path: same table family, a query-plan regression</h3>
+      <span class="case-ticket">actions-processor</span>
+    </div>
+    <div class="case-signal">
+      <span class="tag">Signal</span>
+      <span>Batches were getting stuck in a "fetching" state after ECS scaled workers down mid-claim, and — separately, a few weeks later — a staging incident showed the action-claim query degrading badly under backlog.</span>
+    </div>
+    <p class="narrative">The scale-down issue (<a class="pr-ref" href="https://github.com/patterninc/sensors/pull/935">#935</a>, May 6) was fixed first: batches claimed by a worker that got scaled away before finishing never released, so nothing else could pick them up. The bigger diagnostic story came later, when a staging incident made <code>claimNextActions</code> itself the suspect. Rather than guess at a fix, the query's plan was pulled directly: the existing OR-based claim clause forced a sequential scan plus sort with an estimated cost around <b>217,000</b>, while a pending-only query against the right partial index cost roughly <b>19</b>. That's the kind of gap no amount of code review catches without actually running <code>EXPLAIN</code>.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="fdate">Jun 26 · hotfix</div>
+        <div class="flabel">Split the claim query around the plan gap <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1053">#1053</a> → <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1055">#1055</a></div>
+        <p><code>claimNextActions</code> split into a pending-first query (hits <code>idx_triggered_actions_pending</code>) with a rare stale-in-flight fallback on its own partial index. #1053 carried an unrelated PI-5940 dependency and was closed in favor of #1055, a hotfix-only cut of the same fix shipped without that coupling — a deliberate call to get the query-plan fix out fast without waiting on a larger, riskier PR.</p>
+      </div>
+      <div class="flow-step set-back">
+        <div class="fdate">Jun 29</div>
+        <div class="flabel">A stale migration bundle blocks the next deploy <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1056">#1056</a></div>
+        <p>#1052's merge commit predated #1055's migration file, but staging's <code>knex_migrations</code> table already had that migration recorded from the incident hotfix — so Knex's <code>validateMigrationList</code> hard-failed with "the migration directory is corrupt" and blocked the entire deploy, including unrelated pending migrations. #1056 shipped a reconciliation step to prune stale rows before migrating, plus a harder gate requiring the staging migration to succeed before prod could be approved.</p>
+      </div>
+      <div class="flow-step set-back">
+        <div class="fdate">Jul 1–2 · course-correct</div>
+        <div class="flabel">Revert the over-strict fix, ship the durable one <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1063">#1063</a> (closes <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1062">#1062</a>)</div>
+        <p>Two problems surfaced with #1056 in practice: the reconciliation logic only safely self-heals <em>idempotent</em> migrations, and most of this repo's migrations aren't idempotent — pruning a row for a non-idempotent one and having its file reappear later would make <code>up()</code> error instead of no-op. And the new gate's hard-fail also fired on <code>skipped</code> runs (the normal case for engine-only commits), which blocked #1056's own deploy. #1063 reverted the reconcile Lambda code back to pre-#1056, softened the gate to only hard-fail on an actual migration <code>failure</code>, and replaced the code-level safety net with an operational one: a README policy that out-of-band migrations are never allowed, and any incident hotfix touching the DB ships its migration file in the same PR.</p>
+      </div>
+    </div>
+    <div class="result-callout"><b>Result:</b> the claim query now runs on an index-scan plan instead of a 217k-cost sequential scan under backlog; and — just as important — an over-correction to the deploy gate got caught in practice and replaced with a narrower fix plus a documented policy, instead of being left in place to cause its own outages.</div>
+  </div>
+
+  <!-- CASE 3: DEPLOY GATE + DATADOG -->
+  <div class="case">
+    <div class="case-head">
+      <h3>Designing the deploy-gate suite: letting Datadog pick what to test</h3>
+      <span class="case-ticket">sensors-api-test-suite</span>
+    </div>
+    <div class="case-signal">
+      <span class="tag">Signal</span>
+      <span>sensors-api had no synthetic coverage between a stage deploy and a prod deploy — a regression could reach production with nothing but manual QA in the way. The open question wasn't just "add tests," it was which of ~45 endpoints were worth gating on, and whether Datadog already solved part of this problem.</span>
+    </div>
+    <p class="narrative">Before endpoint selection could be data-driven, Datadog had to actually see individual endpoints. <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/965">#965</a> (May 14) found that APM was only ever recording HTTP-method-level resource names — <code>GET</code>, <code>POST</code> — because <code>dd-trace</code> was configured at the infra layer (sidecar, env vars) but never actually loaded in the sensors-api process. Importing the tracer as the very first statement in <code>app.ts</code>, ahead of Express/pg/http, let Express's auto-instrumentation populate <code>resource.name</code> with the real route template (<code>GET /api/sensors/:sensorId</code>). That one change is what made a per-endpoint Datadog view — and everything that follows below — possible.</p>
+    <p class="narrative">With that in place, a Datadog dashboard built against <b>90 days of production traffic (Feb 26 – May 26)</b> was used to rank endpoints by actual usage rather than by what looked important. The traffic breakdown was the deciding input on at least one real scope call: <code>agentsRoutes.ts</code> had been excluded from the original 45-endpoint route-inventory plan, but the Datadog data showed it carried 4 of the top 5 non-health business endpoints by volume — so it moved from excluded to in-scope, and the target surface narrowed from a blind 45 down to a focused, traffic-ranked 15.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="fdate">May 15</div>
+        <div class="flabel">First synthetic suite, route-inventory scope <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/968">#968</a></div>
+        <p>22 endpoints wired into a Bruno collection with a <code>prod-safe.txt</code> allowlist restricting prod runs to read-only GETs, run on a schedule and after every deploy.</p>
+      </div>
+      <div class="flow-step set-back">
+        <div class="fdate">May 26 · scope pivot mid-PR</div>
+        <div class="flabel">Cut a ~720-line home-grown monitoring stack before it shipped <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/982">#982</a></div>
+        <p>The original plan for this PR was a scheduled heartbeat with an SSM-backed auto-pause kill switch: a CloudWatch alarm on 3 consecutive failures triggering a Lambda that flips an SSM parameter, principal-level IAM split so only the trigger Lambda could arm it, tiered Slack alerting — roughly 720 lines of workflow plus 360 lines of Terraform plus a runbook. Two parallel review passes (a <code>director-tech-code-review</code> pass and a <code>duty-engineer-reviewer</code> on-call-lens pass) converged on the same finding: Datadog's APM, ECS/ALB health checks, and synthetics were <em>already</em> covering continuous prod monitoring end-to-end into PagerDuty, and the home-grown canary was solving an already-solved problem while adding new attack surface of its own (a kill switch nothing was arming). The auto-pause subsystem was deleted wholesale — net <b>-1,027 lines</b> — and replaced with a deploy-gate model: the stage Bruno run blocks every prod deploy job on failure; the prod run after deploy is advisory (Slack + a GitHub Actions annotation, no auto-rollback); a cron run every 2h (prod) / 6h (stage) is a Slack-only backup sitting behind Datadog → PagerDuty, not a replacement for it.</p>
+      </div>
+      <div class="flow-step set-back">
+        <div class="fdate">Jun 1</div>
+        <div class="flabel">Diagnose a false "API contract broken" page <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/997">#997</a></div>
+        <p>The gate went red and paged on-call via Slack → Datadog → PagerDuty as a contract violation, but the six failing endpoints were all returning healthy <code>200</code>s — only the schema-validation step failed, with a bare <code>expecting ';'</code> syntax error. Running the pinned <code>@usebruno/cli@3.3.0</code> directly (not reading docs about it) showed the actual cause: Bruno's sandboxed <code>require()</code> has no JSON loader, so <code>require("./schemas/x.json")</code> reads the file and evaluates it <em>as JavaScript</em>, and a schema's first <code>"key":</code> blows up on the colon. Fixed by emitting schemas as <code>.js</code> modules instead of <code>.json</code>, added a lint guard so no <code>.bru</code> file can regress to requiring a <code>.json</code> schema again, and split validator/loader errors into their own category so a tooling bug can't masquerade as a contract break in front of on-call again.</p>
+      </div>
+      <div class="flow-step">
+        <div class="fdate">May 18 – Jul 6 · ongoing hardening</div>
+        <div class="flabel">Coverage and reliability follow-through</div>
+        <p>Workflow hardening (timeout/retry/secrets guard, <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/969">#969</a>), cron re-enabled (<a class="pr-ref" href="https://github.com/patterninc/sensors/pull/971">#971</a>), webhook-based Slack alerting plus a Bruno query-param bug fix (<a class="pr-ref" href="https://github.com/patterninc/sensors/pull/975">#975</a>), pnpm/tag unblock (<a class="pr-ref" href="https://github.com/patterninc/sensors/pull/991">#991</a>), a documented alarm-mute runbook for last-resort containment (<a class="pr-ref" href="https://github.com/patterninc/sensors/pull/999">#999</a>), muting a fixture-stale endpoint rather than letting it false-fail the gate (<a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1000">#1000</a>), a CI declaration-emit race fix (<a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1012">#1012</a>), wiring the Datadog-ranked endpoints plus sensor-variables/coverage routes into the gate (<a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1023">#1023</a>), and dedicated M2M client coverage (<a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1049">#1049</a>).</p>
+      </div>
+    </div>
+    <div class="metric-flow">
+      <div class="mf-item"><div class="mf-n before">~720 + ~360</div><div class="mf-l">lines: workflow + terraform (auto-pause)</div></div>
+      <div class="mf-item mf-arrow">→</div>
+      <div class="mf-item"><div class="mf-n after">0</div><div class="mf-l">deleted, redundant with Datadog</div></div>
+      <div class="mf-item mf-arrow">→</div>
+      <div class="mf-item"><div class="mf-n">45 → 15</div><div class="mf-l">endpoints, ranked by 90-day traffic</div></div>
+    </div>
+    <div class="result-callout"><b>Result:</b> a stage→prod deploy gate that blocks bad deploys on real endpoint coverage chosen from production traffic data, not committee guesswork — sitting deliberately behind Datadog instead of duplicating it.</div>
+  </div>
+
+  <!-- CASE 4: ORG ACCESS HARDENING -->
+  <div class="case">
+    <div class="case-head">
+      <h3>Org &amp; tenancy access hardening</h3>
+      <span class="case-ticket">PI-6651 → PI-7873 / 7901 / 7920</span>
+    </div>
+    <div class="case-signal">
+      <span class="tag">Signal</span>
+      <span>A security audit surfaced org-scoping gaps across sensors-api read/write routes: some routes trusted client-supplied <code>org_id</code> without verifying membership, and org-id comparisons weren't case-normalized.</span>
+    </div>
+    <p class="narrative">The closure work moved route-family by route-family rather than as one flag flip, because the risk of over-restricting a legitimate M2M caller was as real as the risk of leaving a gap open. <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1076">#1076</a> (Jul 6) fixed org-id comparisons to be case-insensitive at both the gate and row-access layers. <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1077">#1077</a> and <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1084">#1084</a> extended flag-independent org scoping to the remaining read endpoints — agents, sensors, collections, evaluations, and action-assets — so a user-token caller is scoped to their real memberships even while the enforcement flag is off in an environment, with a fail-closed <code>403</code> if scope can't be resolved. <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1020">#1020</a> documented enforcement across all eleven M2M-scoped routes so the contract is explicit rather than implicit.</p>
+
+    <div class="flow">
+      <div class="flow-step set-back">
+        <div class="fdate">Jul 13 · staged rollout, regression found</div>
+        <div class="flabel">Flipping enforcement in staging breaks 5 wildcard-permitted routes</div>
+        <p>Once <code>ORG_ACCESS_ENFORCEMENT_ENABLED</code> was staged for a real flip, M2M clients calling the 12 routes marked <code>allowWildcards: true</code> — cache warmers, the agents service, cross-org read paths that were designed to accept a missing or wildcard <code>org_id</code> — started getting rejected with <code>MISSING_ORG_ID</code>. Root-caused to <code>requireOrgAccess.ts</code>: the gate wasn't distinguishing "no org_id supplied" from "org_id required and absent" on routes that had opted into wildcards.</p>
+      </div>
+      <div class="flow-step">
+        <div class="fdate">Jul 13</div>
+        <div class="flabel">Scoped fix, not a rollback <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1089">#1089</a></div>
+        <p>Rather than widen access broadly, the fix only changes behavior on routes that already had <code>allowWildcards: true</code> before this PR — all twelve are reads, none create/update/delete. M2M callers on those routes still resolve to the same unrestricted scope they always had; user-token callers narrow to their own <code>accessibleOrgIds</code>, never unrestricted, covered by new spec cases for both caller types. Strict routes are untouched and still 400 on a missing <code>org_id</code>. Staging's enforcement flag (<a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1088">#1088</a>) went ahead only after this landed.</p>
+      </div>
+    </div>
+    <div class="result-callout"><b>Result:</b> org-scoping closed across read and write paths with case-insensitive comparisons and documented M2M contracts, and — because the staged rollout was watched rather than fire-and-forgotten — the one regression it produced was caught, root-caused, and fixed same-day instead of reaching prod.</div>
+
+    <p class="evidence-label">PRs in this case</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
+        <tbody>
+        <tr>
+        <td class="repo">sensors</td>
+        <td class="num"><a href="https://github.com/patterninc/sensors/pull/1089">#1089</a></td>
+        <td class="title">fix(sensors-api): allow omitted org_id on wildcard-permitted routes (PI-7920)</td>
+        <td class="pill-cell"><span class="pill merged">Merged</span></td>
+        <td class="loc"><span class="add">+22</span> <span class="del">-0</span></td>
+        <td class="date">Jul 13</td>
+      </tr><tr>
+        <td class="repo">sensors</td>
+        <td class="num"><a href="https://github.com/patterninc/sensors/pull/1088">#1088</a></td>
+        <td class="title">terraform(sensors-api): enable org access enforcement in staging</td>
+        <td class="pill-cell"><span class="pill merged">Merged</span></td>
+        <td class="loc"><span class="add">+1</span> <span class="del">-0</span></td>
+        <td class="date">Jul 13</td>
+      </tr><tr>
+        <td class="repo">sensors</td>
+        <td class="num"><a href="https://github.com/patterninc/sensors/pull/1084">#1084</a></td>
+        <td class="title">PI-7901: enforce org scope on read endpoints (flag-independent)</td>
+        <td class="pill-cell"><span class="pill merged">Merged</span></td>
+        <td class="loc"><span class="add">+1614</span> <span class="del">-251</span></td>
+        <td class="date">Jul 8</td>
+      </tr><tr>
+        <td class="repo">sensors</td>
+        <td class="num"><a href="https://github.com/patterninc/sensors/pull/1077">#1077</a></td>
+        <td class="title">PI-7873: org-scoped GET /api/sensors/:sensorId/resources (flag-independent)</td>
+        <td class="pill-cell"><span class="pill merged">Merged</span></td>
+        <td class="loc"><span class="add">+656</span> <span class="del">-39</span></td>
+        <td class="date">Jul 6</td>
+      </tr><tr>
+        <td class="repo">sensors</td>
+        <td class="num"><a href="https://github.com/patterninc/sensors/pull/1076">#1076</a></td>
+        <td class="title">PI-7874: case-insensitive org-id comparison (gate + rowOrgAccess)</td>
+        <td class="pill-cell"><span class="pill merged">Merged</span></td>
+        <td class="loc"><span class="add">+65</span> <span class="del">-4</span></td>
+        <td class="date">Jul 6</td>
+      </tr><tr>
+        <td class="repo">sensors</td>
+        <td class="num"><a href="https://github.com/patterninc/sensors/pull/1020">#1020</a></td>
+        <td class="title">docs(sensors-api): document org_id enforcement on all 11 M2M-scoped routes (PI-7092)</td>
+        <td class="pill-cell"><span class="pill merged">Merged</span></td>
+        <td class="loc"><span class="add">+603</span> <span class="del">-23</span></td>
+        <td class="date">Jun 15</td>
+      </tr><tr>
+        <td class="repo">sensors</td>
+        <td class="num"><a href="https://github.com/patterninc/sensors/pull/1040">#1040</a></td>
+        <td class="title">PI-5083: Migrate sensor export latest assets to org_id tenancy</td>
+        <td class="pill-cell"><span class="pill merged">Merged</span></td>
+        <td class="loc"><span class="add">+761</span> <span class="del">-49</span></td>
+        <td class="date">Jun 19</td>
+      </tr><tr>
+        <td class="repo">sensors</td>
+        <td class="num"><a href="https://github.com/patterninc/sensors/pull/1001">#1001</a></td>
+        <td class="title">feat(sensors-api): remap staging org_ids to prod for data queries (PI-6650)</td>
+        <td class="pill-cell"><span class="pill open">Open</span></td>
+        <td class="loc"><span class="add">+487</span> <span class="del">-43</span></td>
+        <td class="date">Jun 3</td>
+      </tr><tr>
+        <td class="repo">sensors</td>
+        <td class="num"><a href="https://github.com/patterninc/sensors/pull/1042">#1042</a></td>
+        <td class="title">fix(sensors-api): PI-5941 GET /api/sources collection-scoped discoverability</td>
+        <td class="pill-cell"><span class="pill open">Open</span></td>
+        <td class="loc"><span class="add">+218</span> <span class="del">-21</span></td>
+        <td class="date">Jun 22</td>
+      </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2 class="section-title" style="margin-top: 34px;">Other initiatives</h2>
+  <p class="section-sub">Smaller in scope or less investigation-heavy — kept in the original grouped-table format.</p>
 
     <section class="theme">
       <h3>MCP / agent integration (sensors-api ↔ agents)</h3>
@@ -529,250 +838,8 @@
     </section>
 
     <section class="theme">
-      <h3>Sensor-version-state partitioning (PI-7372)</h3>
-      <p class="theme-desc">Partitioned sensor_version_state by sensor to relieve a hot table, with pinned driver versions, idempotent migrations, and a triggered-only variant behind a flag.</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
-          <tbody>
-          <tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1002">#1002</a></td>
-          <td class="title">feat(sensors-engine): partition sensor_version_state by sensor (PI-7372)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+187</span> <span class="del">-371</span></td>
-          <td class="date">Jun 4</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1005">#1005</a></td>
-          <td class="title">fix(db-migration): pin pg to 8.16.3 and knex to 3.1.0 so isolated lam…</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+2</span> <span class="del">-2</span></td>
-          <td class="date">Jun 8</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1007">#1007</a></td>
-          <td class="title">fix(sensors-engine): rename partition table to sensor_version_state_partition + make migration idempotent (PI-7372)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+50</span> <span class="del">-17</span></td>
-          <td class="date">Jun 8</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1008">#1008</a></td>
-          <td class="title">feat(sensors-engine): triggered-only sensor_version_state behind flag (PI-7372 Ticket 3)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+846</span> <span class="del">-80</span></td>
-          <td class="date">Jun 8</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1011">#1011</a></td>
-          <td class="title">fix(db): partition migration copies only triggered rows (PI-7372)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+9</span> <span class="del">-4</span></td>
-          <td class="date">Jun 9</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1014">#1014</a></td>
-          <td class="title">fix(db): match partition twin varchar columns to unbounded prod types (PI-7372)</td>
-          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
-          <td class="loc"><span class="add">+25</span> <span class="del">-5</span></td>
-          <td class="date">Jun 9</td>
-        </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="theme">
-      <h3>Triggered-actions reliability & claim logic</h3>
-      <p class="theme-desc">Recurring reliability work on the actions-processor claim path: atomic cancellation on expiry, bounded retry, splitting claimNextActions, and repeated hotfix/revert cycles on migration gating.</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
-          <tbody>
-          <tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/935">#935</a></td>
-          <td class="title">solve Batches stuck in fetching after ECS scale-down</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+1131</span> <span class="del">-65</span></td>
-          <td class="date">May 6</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1021">#1021</a></td>
-          <td class="title">PI-1726: cancel pending triggered_actions atomically on sensor state expiry</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+156</span> <span class="del">-56</span></td>
-          <td class="date">Jun 15</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1050">#1050</a></td>
-          <td class="title">feat(sensors-engine): bounded retry for triggered actions (PI-1724)</td>
-          <td class="pill-cell"><span class="pill open">Open</span></td>
-          <td class="loc"><span class="add">+1446</span> <span class="del">-235</span></td>
-          <td class="date">Jun 24</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1052">#1052</a></td>
-          <td class="title">fix(sensors-api): harden visibility dependency guards (PI-5940)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+1314</span> <span class="del">-148</span></td>
-          <td class="date">Jun 25</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1053">#1053</a></td>
-          <td class="title">fix(sensors-engine): split claimNextActions to use pending partial index</td>
-          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
-          <td class="loc"><span class="add">+1417</span> <span class="del">-156</span></td>
-          <td class="date">Jun 26</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1055">#1055</a></td>
-          <td class="title">fix(sensors-engine): split claimNextActions (hotfix-only, no PI-5940)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+235</span> <span class="del">-14</span></td>
-          <td class="date">Jun 26</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1056">#1056</a></td>
-          <td class="title">fix(sensors-engine): reconcile stale knex_migrations + gate prod on stage migration</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+305</span> <span class="del">-3</span></td>
-          <td class="date">Jun 29</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1063">#1063</a></td>
-          <td class="title">revert(sensors-engine): drop reconcile + soften stage-migration gate + add policy</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+74</span> <span class="del">-285</span></td>
-          <td class="date">Jul 1</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1062">#1062</a></td>
-          <td class="title">fix(ci): run stage/dev migrations when sensors-api deploy is skipped</td>
-          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
-          <td class="loc"><span class="add">+15</span> <span class="del">-1</span></td>
-          <td class="date">Jul 1</td>
-        </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="theme">
-      <h3>Deploy-gate & Bruno test automation</h3>
-      <p class="theme-desc">Built and continually hardened the stage→prod Bruno deploy-gate suite from scratch: cron scheduling, Slack alerting, schema-loading fixes, fixture muting, and endpoint coverage expansion.</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
-          <tbody>
-          <tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/968">#968</a></td>
-          <td class="title">feat(sensors-api): add automated bruno test suite for stage + prod</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+725</span> <span class="del">-43</span></td>
-          <td class="date">May 15</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/969">#969</a></td>
-          <td class="title">fix(sensors-api): harden test suite workflow (timeout, retry, secrets guard)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+190</span> <span class="del">-32</span></td>
-          <td class="date">May 18</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/971">#971</a></td>
-          <td class="title">feat(sensors-api): re-enable test-suite cron schedule</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+306</span> <span class="del">-280</span></td>
-          <td class="date">May 19</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/975">#975</a></td>
-          <td class="title">ci(sensors-api): webhook-based Slack alert + fix Bruno params:query bug + harden notify path</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+118</span> <span class="del">-192</span></td>
-          <td class="date">May 20</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/982">#982</a></td>
-          <td class="title">feat(sensors-api): v5 testing suite — stage→prod deploy gate</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+3813</span> <span class="del">-320</span></td>
-          <td class="date">May 26</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/991">#991</a></td>
-          <td class="title">fix: unblock sensors-api test-suite workflow (pnpm version + @smoke tag)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+33</span> <span class="del">-42</span></td>
-          <td class="date">May 29</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/993">#993</a></td>
-          <td class="title">ci(sensors-api): add skip switch for blocking Bruno deploy-gate suite</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+11</span> <span class="del">-3</span></td>
-          <td class="date">May 29</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/997">#997</a></td>
-          <td class="title">fix(sensors-api): load Bruno schemas as .js modules, not .json (fixes red heartbeat gate)</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+156</span> <span class="del">-102</span></td>
-          <td class="date">Jun 1</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/998">#998</a></td>
-          <td class="title">fix(sensors-api): restore deploy-gate trust + de-noise heartbeat suite</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+89</span> <span class="del">-101</span></td>
-          <td class="date">Jun 1</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/999">#999</a></td>
-          <td class="title">docs(sensors-api): gate alarm-mute runbook (last-resort containment)</td>
-          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
-          <td class="loc"><span class="add">+105</span> <span class="del">-0</span></td>
-          <td class="date">Jun 1</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1000">#1000</a></td>
-          <td class="title">fix(sensors-api): mute fixture-stale eval-results endpoint in the deploy gate</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+10</span> <span class="del">-2</span></td>
-          <td class="date">Jun 1</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1012">#1012</a></td>
-          <td class="title">fix(ci): order typecheck tasks to prevent concurrent declaration-emit race</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+1</span> <span class="del">-1</span></td>
-          <td class="date">Jun 9</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1023">#1023</a></td>
-          <td class="title">test(sensors-api): wire sensor-variables & coverage endpoints into Bruno gate</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+1114</span> <span class="del">-32</span></td>
-          <td class="date">Jun 16</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1049">#1049</a></td>
-          <td class="title">test(sensors-api): M2M client test coverage (PI-7076)</td>
-          <td class="pill-cell"><span class="pill open">Open</span></td>
-          <td class="loc"><span class="add">+469</span> <span class="del">-85</span></td>
-          <td class="date">Jun 24</td>
-        </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="theme">
       <h3>Feature & API work</h3>
-      <p class="theme-desc">Product-facing sensors-api features: transactional handlers, APM tracing, audit history, dependency-derived sources, cascading PATCH updates, and DRAFT-state promotion.</p>
+      <p class="theme-desc">Product-facing sensors-api features: transactional handlers, audit history, dependency-derived sources, cascading PATCH updates, and DRAFT-state promotion. <a class="pr-ref" href="https://github.com/patterninc/sensors/pull/1026">#1026</a> is its own small diagnosis: prod test-suite failures showed <code>GET/POST /api/agents/sensor_analysis</code> returning a 503 at ~30 seconds. Root cause was an API Gateway integration timeout (30s) racing an unbounded Trino <code>COUNT(*)</code> that ran with a 120s Heimdall budget — the app had headroom the edge didn't. Fix bounds the request to 21s with abort propagation, returns <code>total: null</code> when the count itself can't finish in budget rather than 503ing the whole response, and caches the windowed count for 300s to keep the deploy-gate path warm.</p>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
@@ -784,13 +851,6 @@
           <td class="pill-cell"><span class="pill merged">Merged</span></td>
           <td class="loc"><span class="add">+685</span> <span class="del">-441</span></td>
           <td class="date">May 12</td>
-        </tr><tr>
-          <td class="repo">sensors</td>
-          <td class="num"><a href="https://github.com/patterninc/sensors/pull/965">#965</a></td>
-          <td class="title">feat(sensors-api): initialize dd-trace for per-endpoint APM metrics</td>
-          <td class="pill-cell"><span class="pill merged">Merged</span></td>
-          <td class="loc"><span class="add">+170</span> <span class="del">-14</span></td>
-          <td class="date">May 14</td>
         </tr><tr>
           <td class="repo">sensors</td>
           <td class="num"><a href="https://github.com/patterninc/sensors/pull/1025">#1025</a></td>
@@ -922,7 +982,7 @@
   </div>
 
   <footer class="notes">
-    <p>Method: <code>gh pr list --repo patterninc/&lt;repo&gt; --author CHAOLIN99 --state all --search "created:&gt;=2026-05-01"</code> against each repo's GitHub remote, run 2026-07-14. "Opened" dates reflect PR creation, not merge; "Closed" means closed without merging (superseded, split into a different PR, or abandoned). Grouping into initiatives is inferred from PR titles/tickets, not from a project-tracker export.</p>
+    <p>Method: <code>gh pr list --repo patterninc/&lt;repo&gt; --author CHAOLIN99 --state all --search "created:&gt;=2026-05-01"</code> against each repo's GitHub remote, cross-referenced against individual PR bodies, review threads, and linked run logs for the four deep-dive sections, run 2026-07-14. "Opened" dates reflect PR creation, not merge; "Closed" means closed without merging (superseded, split into a different PR, or abandoned). The diagnose → plan → solve narratives are reconstructed from what each PR's own description states about root cause, prior failed attempts, and review findings — not from a separate incident tracker export.</p>
   </footer>
 
 </div>
