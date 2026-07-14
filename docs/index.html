@@ -1,0 +1,928 @@
+<title>CHAOLIN99 — Contribution Report, May–Jul 2026</title>
+<style>
+  :root {
+    --bg: #f4f7f7;
+    --surface: #ffffff;
+    --surface-2: #eef2f2;
+    --text: #12191b;
+    --muted: #526567;
+    --faint: #7c8c8e;
+    --border: rgba(18, 25, 27, 0.10);
+    --accent: #1f6f6b;
+    --accent-soft: #dcece9;
+    --merged-bg: #e1efe2;
+    --merged-fg: #2c6b3c;
+    --open-bg: #f3e9d3;
+    --open-fg: #8a611a;
+    --unmerged-bg: #f1e2e1;
+    --unmerged-fg: #8a4a45;
+    --add: #2c6b3c;
+    --del: #a34a3f;
+    --shadow: 0 1px 2px rgba(18,25,27,0.04), 0 8px 24px rgba(18,25,27,0.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1416;
+      --surface: #161f21;
+      --surface-2: #1c2729;
+      --text: #e7eeee;
+      --muted: #a1b0b1;
+      --faint: #74898b;
+      --border: rgba(231, 238, 238, 0.10);
+      --accent: #5bb3ac;
+      --accent-soft: #1d3634;
+      --merged-bg: #1c3324;
+      --merged-fg: #7fd399;
+      --open-bg: #35301c;
+      --open-fg: #e3bd6f;
+      --unmerged-bg: #35201f;
+      --unmerged-fg: #e29b93;
+      --add: #7fd399;
+      --del: #e29b93;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1416; --surface: #161f21; --surface-2: #1c2729; --text: #e7eeee;
+    --muted: #a1b0b1; --faint: #74898b; --border: rgba(231, 238, 238, 0.10);
+    --accent: #5bb3ac; --accent-soft: #1d3634;
+    --merged-bg: #1c3324; --merged-fg: #7fd399;
+    --open-bg: #35301c; --open-fg: #e3bd6f;
+    --unmerged-bg: #35201f; --unmerged-fg: #e29b93;
+    --add: #7fd399; --del: #e29b93;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f7f7; --surface: #ffffff; --surface-2: #eef2f2; --text: #12191b;
+    --muted: #526567; --faint: #7c8c8e; --border: rgba(18, 25, 27, 0.10);
+    --accent: #1f6f6b; --accent-soft: #dcece9;
+    --merged-bg: #e1efe2; --merged-fg: #2c6b3c;
+    --open-bg: #f3e9d3; --open-fg: #8a611a;
+    --unmerged-bg: #f1e2e1; --unmerged-fg: #8a4a45;
+    --add: #2c6b3c; --del: #a34a3f;
+    --shadow: 0 1px 2px rgba(18,25,27,0.04), 0 8px 24px rgba(18,25,27,0.05);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+  header.masthead {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+    margin-bottom: 36px;
+  }
+  .eyebrow {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  h1 {
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1.15;
+    margin: 0 0 10px;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .subhead {
+    color: var(--muted);
+    font-size: 15.5px;
+    max-width: 62ch;
+    margin: 0;
+  }
+  .subhead code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+  }
+  .stat .n {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .stat .n.add { color: var(--add); }
+  .stat .n.del { color: var(--del); }
+  .stat .l {
+    font-size: 12px;
+    color: var(--faint);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+
+  .overview {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow);
+  }
+  .overview h2 {
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 19px;
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+  .overview p { margin: 0 0 12px; color: var(--text); font-size: 15px; }
+  .overview p:last-child { margin-bottom: 0; }
+  .overview .repo-tally {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .repo-chip {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 11px;
+    color: var(--muted);
+  }
+  .repo-chip b { color: var(--text); font-variant-numeric: tabular-nums; }
+
+  h2.section-title {
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-weight: 600;
+    color: var(--faint);
+    margin: 0 0 18px;
+  }
+
+  section.theme {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px 8px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+  }
+  section.theme h3 {
+    font-family: Georgia, "Iowan Old Style", serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    letter-spacing: -0.005em;
+  }
+  .theme-desc {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 14px;
+    max-width: 72ch;
+  }
+
+  .table-wrap { overflow-x: auto; margin: 0 -22px; padding: 0 22px 14px; }
+  table { border-collapse: collapse; width: 100%; min-width: 600px; }
+  thead th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    font-weight: 600;
+    padding: 0 10px 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td {
+    padding: 9px 10px 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.title { white-space: normal; color: var(--text); min-width: 260px; }
+  td.repo {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    color: var(--faint);
+  }
+  td.num a {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  td.num a:hover { text-decoration: underline; }
+  td.num a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+  td.date { color: var(--faint); font-variant-numeric: tabular-nums; font-size: 13px; }
+  td.loc {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .add { color: var(--add); }
+  .del { color: var(--del); }
+
+  .pill {
+    display: inline-block;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 2.5px 9px;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+  }
+  .pill.merged { background: var(--merged-bg); color: var(--merged-fg); }
+  .pill.open { background: var(--open-bg); color: var(--open-fg); }
+  .pill.unmerged { background: var(--unmerged-bg); color: var(--unmerged-fg); }
+
+  .repo-summary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow);
+  }
+  .repo-summary table { width: 100%; min-width: 0; }
+  .repo-summary td, .repo-summary th { white-space: nowrap; }
+  .repo-summary td.repo-name {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-weight: 600;
+    color: var(--text);
+    font-size: 14px;
+  }
+
+  footer.notes {
+    color: var(--faint);
+    font-size: 12.5px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    margin-top: 44px;
+  }
+  footer.notes p { margin: 0 0 6px; }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">Contribution report · Pattern</p>
+    <h1>CHAOLIN99 — May 1 to Jul 14, 2026</h1>
+    <p class="subhead">All pull requests authored by <code>CHAOLIN99</code> across <code>agents</code>, <code>pi-toolsmith</code>, <code>sensors</code>, and <code>data-airflow</code>, compiled via GitHub search (<code>author:CHAOLIN99 created:&gt;=2026-05-01</code>) and grouped by initiative.</p>
+  </header>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="n">67</div><div class="l">Total PRs</div></div>
+    <div class="stat"><div class="n">47</div><div class="l">Merged</div></div>
+    <div class="stat"><div class="n">11</div><div class="l">Still open</div></div>
+    <div class="stat"><div class="n">9</div><div class="l">Closed, unmerged</div></div>
+    <div class="stat"><div class="n add">+40,910</div><div class="l">Lines added</div></div>
+    <div class="stat"><div class="n del">-6,882</div><div class="l">Lines removed</div></div>
+  </div>
+
+  <div class="overview">
+    <h2>Overview</h2>
+    <p>Since the start of May, CHAOLIN99's work has centered almost entirely on the <b>sensors</b> platform (58 of 67 PRs), spanning both the sensors-api/sensors-engine application code and its Terraform-managed infrastructure. The largest through-line is a sustained <b>org/tenancy access-control hardening effort</b> — closing scoping gaps on read and write routes, fixing case-sensitivity bugs in org-id checks, and documenting enforcement across every M2M-scoped route — which is still active as of the most recent PR (#1089, Jul 13). Running in parallel was a from-scratch build-out of the <b>Bruno-based stage→prod deploy gate</b> (14 PRs), which went from an initial automated suite in mid-May to a hardened, alerting-integrated gate by early July.</p>
+    <p>A second major cluster is <b>reliability work on the actions-processor / triggered-actions claim path</b> and the underlying <b>sensor_version_state table partitioning</b> (PI-7372), including several same-week hotfix/revert cycles that suggest this was a delicate, iteratively-debugged migration. Cross-repo work connected <b>sensors-api to the MCP surface used by agents</b> (org/brand/version header propagation, coverage CRUD, provenance envelopes) and separately gated <b>source-app lineage</b> and <b>Pattern-user-only recommendations</b> at both the sensors-api and agents layers — the latter two show a pattern of PRs opened in pairs across repos that were later closed/reworked rather than merged as originally split.</p>
+    <div class="repo-tally">
+      <span class="repo-chip">sensors — <b>58</b> PRs</span>
+      <span class="repo-chip">agents — <b>5</b> PRs</span>
+      <span class="repo-chip">pi-toolsmith — <b>3</b> PRs</span>
+      <span class="repo-chip">data-airflow — <b>1</b> PR</span>
+    </div>
+  </div>
+
+  <h2 class="section-title">By initiative</h2>
+
+  
+    <section class="theme">
+      <h3>Org & tenancy access hardening</h3>
+      <p class="theme-desc">A months-long security-audit thread: closing org-scoping gaps across sensors-api read/write routes, case-insensitive org-id comparisons, staging enforcement, and documentation of every M2M-scoped route.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
+          <tbody>
+          <tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1089">#1089</a></td>
+          <td class="title">fix(sensors-api): allow omitted org_id on wildcard-permitted routes (PI-7920)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+22</span> <span class="del">-0</span></td>
+          <td class="date">Jul 13</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1088">#1088</a></td>
+          <td class="title">terraform(sensors-api): enable org access enforcement in staging</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+1</span> <span class="del">-0</span></td>
+          <td class="date">Jul 13</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1084">#1084</a></td>
+          <td class="title">PI-7901: enforce org scope on read endpoints (flag-independent)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+1614</span> <span class="del">-251</span></td>
+          <td class="date">Jul 8</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1077">#1077</a></td>
+          <td class="title">PI-7873: org-scoped GET /api/sensors/:sensorId/resources (flag-independent)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+656</span> <span class="del">-39</span></td>
+          <td class="date">Jul 6</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1076">#1076</a></td>
+          <td class="title">PI-7874: case-insensitive org-id comparison (gate + rowOrgAccess)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+65</span> <span class="del">-4</span></td>
+          <td class="date">Jul 6</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1020">#1020</a></td>
+          <td class="title">docs(sensors-api): document org_id enforcement on all 11 M2M-scoped routes (PI-7092)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+603</span> <span class="del">-23</span></td>
+          <td class="date">Jun 15</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1040">#1040</a></td>
+          <td class="title">PI-5083: Migrate sensor export latest assets to org_id tenancy</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+761</span> <span class="del">-49</span></td>
+          <td class="date">Jun 19</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1001">#1001</a></td>
+          <td class="title">feat(sensors-api): remap staging org_ids to prod for data queries (PI-6650)</td>
+          <td class="pill-cell"><span class="pill open">Open</span></td>
+          <td class="loc"><span class="add">+487</span> <span class="del">-43</span></td>
+          <td class="date">Jun 3</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1042">#1042</a></td>
+          <td class="title">fix(sensors-api): PI-5941 GET /api/sources collection-scoped discoverability</td>
+          <td class="pill-cell"><span class="pill open">Open</span></td>
+          <td class="loc"><span class="add">+218</span> <span class="del">-21</span></td>
+          <td class="date">Jun 22</td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="theme">
+      <h3>MCP / agent integration (sensors-api ↔ agents)</h3>
+      <p class="theme-desc">Wiring sensors-api into the MCP surface used by agents: forwarding org/brand/version context through headers, then completing the coverage CRUD + provenance envelope and toggle-gated rollout.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
+          <tbody>
+          <tr>
+          <td class="repo">pi-toolsmith</td>
+          <td class="num"><a href="https://github.com/patterninc/pi-toolsmith/pull/766">#766</a></td>
+          <td class="title">feat(sensors): read org/brand/version from MCP request headers (PI-7357)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+272</span> <span class="del">-107</span></td>
+          <td class="date">Jun 3</td>
+        </tr><tr>
+          <td class="repo">agents</td>
+          <td class="num"><a href="https://github.com/patterninc/agents/pull/2104">#2104</a></td>
+          <td class="title">feat(sensors): emit X-Org-Brand-Id and X-Sensor-Version-Id MCP headers (PI-7357)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+97</span> <span class="del">-1</span></td>
+          <td class="date">Jun 2</td>
+        </tr><tr>
+          <td class="repo">agents</td>
+          <td class="num"><a href="https://github.com/patterninc/agents/pull/2105">#2105</a></td>
+          <td class="title">refactor(sensors): remove injectSensorContext (PI-7357, agents PR-2)</td>
+          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
+          <td class="loc"><span class="add">+5</span> <span class="del">-318</span></td>
+          <td class="date">Jun 2</td>
+        </tr><tr>
+          <td class="repo">agents</td>
+          <td class="num"><a href="https://github.com/patterninc/agents/pull/2387">#2387</a></td>
+          <td class="title">feat(pi): toggle-gated sensors-api MCP wiring for PI-7507</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+57</span> <span class="del">-2</span></td>
+          <td class="date">Jul 2</td>
+        </tr><tr>
+          <td class="repo">pi-toolsmith</td>
+          <td class="num"><a href="https://github.com/patterninc/pi-toolsmith/pull/951">#951</a></td>
+          <td class="title">feat(sensors-api): PI-7507 completion — coverage CRUD/history + provenance envelope</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+601</span> <span class="del">-111</span></td>
+          <td class="date">Jun 30</td>
+        </tr><tr>
+          <td class="repo">pi-toolsmith</td>
+          <td class="num"><a href="https://github.com/patterninc/pi-toolsmith/pull/958">#958</a></td>
+          <td class="title">fix(sensors-shim): forward user bearer for lineage-enforced routes</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+336</span> <span class="del">-243</span></td>
+          <td class="date">Jul 1</td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="theme">
+      <h3>Source-app lineage & resource-context typing</h3>
+      <p class="theme-desc">Tier-1 lineage enforcement at the agents invocation boundary, plus promoting resource_context payload fields to typed columns across sensors and data-airflow.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
+          <tbody>
+          <tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1057">#1057</a></td>
+          <td class="title">PI-6649: source-app lineage and Tier 1 enforcement</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+3652</span> <span class="del">-75</span></td>
+          <td class="date">Jun 29</td>
+        </tr><tr>
+          <td class="repo">agents</td>
+          <td class="num"><a href="https://github.com/patterninc/agents/pull/2355">#2355</a></td>
+          <td class="title">PI-6649: agents source-app gate at invocation entry</td>
+          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
+          <td class="loc"><span class="add">+364</span> <span class="del">-6</span></td>
+          <td class="date">Jun 29</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1016">#1016</a></td>
+          <td class="title">Filter promoted resource_context columns with JSON fallback (PI-1725)</td>
+          <td class="pill-cell"><span class="pill open">Open</span></td>
+          <td class="loc"><span class="add">+68</span> <span class="del">-23</span></td>
+          <td class="date">Jun 10</td>
+        </tr><tr>
+          <td class="repo">data-airflow</td>
+          <td class="num"><a href="https://github.com/patterninc/data-airflow/pull/3873">#3873</a></td>
+          <td class="title">Promote resource_context fields to typed columns on sensor eval tables (PI-1725)</td>
+          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
+          <td class="loc"><span class="add">+600</span> <span class="del">-184</span></td>
+          <td class="date">Jun 10</td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="theme">
+      <h3>Pattern-user gating for recommendations</h3>
+      <p class="theme-desc">Two-part gate restricting recommendation surfaces to Pattern users, split across the sensors-api route layer and the agents invocation layer.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
+          <tbody>
+          <tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/972">#972</a></td>
+          <td class="title">[PI-6784] SENSORS — Lock recommendations to Pattern users (Part 1/2: sensors-api gate)</td>
+          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
+          <td class="loc"><span class="add">+553</span> <span class="del">-91</span></td>
+          <td class="date">May 19</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/974">#974</a></td>
+          <td class="title">feat(sensors-api): Pattern-user gate on /recommendations* routes (PI-6784)</td>
+          <td class="pill-cell"><span class="pill open">Open</span></td>
+          <td class="loc"><span class="add">+789</span> <span class="del">-5</span></td>
+          <td class="date">May 20</td>
+        </tr><tr>
+          <td class="repo">agents</td>
+          <td class="num"><a href="https://github.com/patterninc/agents/pull/1986">#1986</a></td>
+          <td class="title">feat(agents): Pattern-user gate for recommendation surfaces (PI-6784, part 2/2)</td>
+          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
+          <td class="loc"><span class="add">+1577</span> <span class="del">-7</span></td>
+          <td class="date">May 20</td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="theme">
+      <h3>Sensor-version-state partitioning (PI-7372)</h3>
+      <p class="theme-desc">Partitioned sensor_version_state by sensor to relieve a hot table, with pinned driver versions, idempotent migrations, and a triggered-only variant behind a flag.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
+          <tbody>
+          <tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1002">#1002</a></td>
+          <td class="title">feat(sensors-engine): partition sensor_version_state by sensor (PI-7372)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+187</span> <span class="del">-371</span></td>
+          <td class="date">Jun 4</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1005">#1005</a></td>
+          <td class="title">fix(db-migration): pin pg to 8.16.3 and knex to 3.1.0 so isolated lam…</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+2</span> <span class="del">-2</span></td>
+          <td class="date">Jun 8</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1007">#1007</a></td>
+          <td class="title">fix(sensors-engine): rename partition table to sensor_version_state_partition + make migration idempotent (PI-7372)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+50</span> <span class="del">-17</span></td>
+          <td class="date">Jun 8</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1008">#1008</a></td>
+          <td class="title">feat(sensors-engine): triggered-only sensor_version_state behind flag (PI-7372 Ticket 3)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+846</span> <span class="del">-80</span></td>
+          <td class="date">Jun 8</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1011">#1011</a></td>
+          <td class="title">fix(db): partition migration copies only triggered rows (PI-7372)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+9</span> <span class="del">-4</span></td>
+          <td class="date">Jun 9</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1014">#1014</a></td>
+          <td class="title">fix(db): match partition twin varchar columns to unbounded prod types (PI-7372)</td>
+          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
+          <td class="loc"><span class="add">+25</span> <span class="del">-5</span></td>
+          <td class="date">Jun 9</td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="theme">
+      <h3>Triggered-actions reliability & claim logic</h3>
+      <p class="theme-desc">Recurring reliability work on the actions-processor claim path: atomic cancellation on expiry, bounded retry, splitting claimNextActions, and repeated hotfix/revert cycles on migration gating.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
+          <tbody>
+          <tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/935">#935</a></td>
+          <td class="title">solve Batches stuck in fetching after ECS scale-down</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+1131</span> <span class="del">-65</span></td>
+          <td class="date">May 6</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1021">#1021</a></td>
+          <td class="title">PI-1726: cancel pending triggered_actions atomically on sensor state expiry</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+156</span> <span class="del">-56</span></td>
+          <td class="date">Jun 15</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1050">#1050</a></td>
+          <td class="title">feat(sensors-engine): bounded retry for triggered actions (PI-1724)</td>
+          <td class="pill-cell"><span class="pill open">Open</span></td>
+          <td class="loc"><span class="add">+1446</span> <span class="del">-235</span></td>
+          <td class="date">Jun 24</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1052">#1052</a></td>
+          <td class="title">fix(sensors-api): harden visibility dependency guards (PI-5940)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+1314</span> <span class="del">-148</span></td>
+          <td class="date">Jun 25</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1053">#1053</a></td>
+          <td class="title">fix(sensors-engine): split claimNextActions to use pending partial index</td>
+          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
+          <td class="loc"><span class="add">+1417</span> <span class="del">-156</span></td>
+          <td class="date">Jun 26</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1055">#1055</a></td>
+          <td class="title">fix(sensors-engine): split claimNextActions (hotfix-only, no PI-5940)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+235</span> <span class="del">-14</span></td>
+          <td class="date">Jun 26</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1056">#1056</a></td>
+          <td class="title">fix(sensors-engine): reconcile stale knex_migrations + gate prod on stage migration</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+305</span> <span class="del">-3</span></td>
+          <td class="date">Jun 29</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1063">#1063</a></td>
+          <td class="title">revert(sensors-engine): drop reconcile + soften stage-migration gate + add policy</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+74</span> <span class="del">-285</span></td>
+          <td class="date">Jul 1</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1062">#1062</a></td>
+          <td class="title">fix(ci): run stage/dev migrations when sensors-api deploy is skipped</td>
+          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
+          <td class="loc"><span class="add">+15</span> <span class="del">-1</span></td>
+          <td class="date">Jul 1</td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="theme">
+      <h3>Deploy-gate & Bruno test automation</h3>
+      <p class="theme-desc">Built and continually hardened the stage→prod Bruno deploy-gate suite from scratch: cron scheduling, Slack alerting, schema-loading fixes, fixture muting, and endpoint coverage expansion.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
+          <tbody>
+          <tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/968">#968</a></td>
+          <td class="title">feat(sensors-api): add automated bruno test suite for stage + prod</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+725</span> <span class="del">-43</span></td>
+          <td class="date">May 15</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/969">#969</a></td>
+          <td class="title">fix(sensors-api): harden test suite workflow (timeout, retry, secrets guard)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+190</span> <span class="del">-32</span></td>
+          <td class="date">May 18</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/971">#971</a></td>
+          <td class="title">feat(sensors-api): re-enable test-suite cron schedule</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+306</span> <span class="del">-280</span></td>
+          <td class="date">May 19</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/975">#975</a></td>
+          <td class="title">ci(sensors-api): webhook-based Slack alert + fix Bruno params:query bug + harden notify path</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+118</span> <span class="del">-192</span></td>
+          <td class="date">May 20</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/982">#982</a></td>
+          <td class="title">feat(sensors-api): v5 testing suite — stage→prod deploy gate</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+3813</span> <span class="del">-320</span></td>
+          <td class="date">May 26</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/991">#991</a></td>
+          <td class="title">fix: unblock sensors-api test-suite workflow (pnpm version + @smoke tag)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+33</span> <span class="del">-42</span></td>
+          <td class="date">May 29</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/993">#993</a></td>
+          <td class="title">ci(sensors-api): add skip switch for blocking Bruno deploy-gate suite</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+11</span> <span class="del">-3</span></td>
+          <td class="date">May 29</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/997">#997</a></td>
+          <td class="title">fix(sensors-api): load Bruno schemas as .js modules, not .json (fixes red heartbeat gate)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+156</span> <span class="del">-102</span></td>
+          <td class="date">Jun 1</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/998">#998</a></td>
+          <td class="title">fix(sensors-api): restore deploy-gate trust + de-noise heartbeat suite</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+89</span> <span class="del">-101</span></td>
+          <td class="date">Jun 1</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/999">#999</a></td>
+          <td class="title">docs(sensors-api): gate alarm-mute runbook (last-resort containment)</td>
+          <td class="pill-cell"><span class="pill unmerged">Closed</span></td>
+          <td class="loc"><span class="add">+105</span> <span class="del">-0</span></td>
+          <td class="date">Jun 1</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1000">#1000</a></td>
+          <td class="title">fix(sensors-api): mute fixture-stale eval-results endpoint in the deploy gate</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+10</span> <span class="del">-2</span></td>
+          <td class="date">Jun 1</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1012">#1012</a></td>
+          <td class="title">fix(ci): order typecheck tasks to prevent concurrent declaration-emit race</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+1</span> <span class="del">-1</span></td>
+          <td class="date">Jun 9</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1023">#1023</a></td>
+          <td class="title">test(sensors-api): wire sensor-variables & coverage endpoints into Bruno gate</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+1114</span> <span class="del">-32</span></td>
+          <td class="date">Jun 16</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1049">#1049</a></td>
+          <td class="title">test(sensors-api): M2M client test coverage (PI-7076)</td>
+          <td class="pill-cell"><span class="pill open">Open</span></td>
+          <td class="loc"><span class="add">+469</span> <span class="del">-85</span></td>
+          <td class="date">Jun 24</td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="theme">
+      <h3>Feature & API work</h3>
+      <p class="theme-desc">Product-facing sensors-api features: transactional handlers, APM tracing, audit history, dependency-derived sources, cascading PATCH updates, and DRAFT-state promotion.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
+          <tbody>
+          <tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/962">#962</a></td>
+          <td class="title">Wrap update/patch handlers in DB transactions</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+685</span> <span class="del">-441</span></td>
+          <td class="date">May 12</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/965">#965</a></td>
+          <td class="title">feat(sensors-api): initialize dd-trace for per-endpoint APM metrics</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+170</span> <span class="del">-14</span></td>
+          <td class="date">May 14</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1025">#1025</a></td>
+          <td class="title">feat(sensors-api): PI-7627 resolution preview — winning_scope, 404, org-scoped reads</td>
+          <td class="pill-cell"><span class="pill open">Open</span></td>
+          <td class="loc"><span class="add">+311</span> <span class="del">-35</span></td>
+          <td class="date">Jun 17</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1026">#1026</a></td>
+          <td class="title">fix(sensors-api): prevent sensor_analysis 503s from slow Trino COUNT</td>
+          <td class="pill-cell"><span class="pill open">Open</span></td>
+          <td class="loc"><span class="add">+1067</span> <span class="del">-494</span></td>
+          <td class="date">Jun 17</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1027">#1027</a></td>
+          <td class="title">PI-7535 + PI-7628: variable audit history and org-scoped routing</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+4723</span> <span class="del">-535</span></td>
+          <td class="date">Jun 17</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1039">#1039</a></td>
+          <td class="title">PI-7629: Derive sensor_versions.sources from sensor_version_dependencies</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+1535</span> <span class="del">-206</span></td>
+          <td class="date">Jun 19</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1046">#1046</a></td>
+          <td class="title">feat(sensors-api): cascade downstream sensor versions on PATCH (PI-5884)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+2334</span> <span class="del">-173</span></td>
+          <td class="date">Jun 23</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1064">#1064</a></td>
+          <td class="title">fix(sensors-api): promote pending DRAFT on visibility (PI-7857)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+485</span> <span class="del">-15</span></td>
+          <td class="date">Jul 1</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1003">#1003</a></td>
+          <td class="title">feat(sensors): collapse to single payload column (PI-7440 Phase A)</td>
+          <td class="pill-cell"><span class="pill open">Open</span></td>
+          <td class="loc"><span class="add">+103</span> <span class="del">-204</span></td>
+          <td class="date">Jun 5</td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="theme">
+      <h3>Infra, runtime & decommissioning</h3>
+      <p class="theme-desc">ECS/container lifecycle hardening (graceful shutdown, scale-in protection), RDS Proxy IAM auth groundwork, and sensors-ui CORS decommissioning.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Repo</th><th>PR</th><th>Title</th><th>Status</th><th>Diff</th><th>Opened</th></tr></thead>
+          <tbody>
+          <tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/989">#989</a></td>
+          <td class="title">Revert "feat(sensors-engine): bundle smoke test in worker docker builds (PI-7340)"</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+0</span> <span class="del">-40</span></td>
+          <td class="date">May 28</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/990">#990</a></td>
+          <td class="title">Update Dockerfile to set NODE_ENV to production</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+2</span> <span class="del">-2</span></td>
+          <td class="date">May 28</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1015">#1015</a></td>
+          <td class="title">feat(actions-processor): port graceful shutdown + ECS scale-in protection (PI-7329)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+746</span> <span class="del">-43</span></td>
+          <td class="date">Jun 10</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1018">#1018</a></td>
+          <td class="title">feat(db): RDS Proxy IAM auth + real SSL wiring — Code PR (PI-1430)</td>
+          <td class="pill-cell"><span class="pill open">Open</span></td>
+          <td class="loc"><span class="add">+895</span> <span class="del">-368</span></td>
+          <td class="date">Jun 11</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1019">#1019</a></td>
+          <td class="title">feat(infra): RDS Proxy IAM auth resources (PI-1430)</td>
+          <td class="pill-cell"><span class="pill open">Open</span></td>
+          <td class="loc"><span class="add">+153</span> <span class="del">-2</span></td>
+          <td class="date">Jun 11</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1086">#1086</a></td>
+          <td class="title">PI-7915: Remove sensors-ui CORS origins + decommission docs</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+23</span> <span class="del">-16</span></td>
+          <td class="date">Jul 9</td>
+        </tr><tr>
+          <td class="repo">sensors</td>
+          <td class="num"><a href="https://github.com/patterninc/sensors/pull/1045">#1045</a></td>
+          <td class="title">fix(sensors-engine): re-add worker Docker smoke test with import-time-safe config (PI-7353)</td>
+          <td class="pill-cell"><span class="pill merged">Merged</span></td>
+          <td class="loc"><span class="add">+28</span> <span class="del">-14</span></td>
+          <td class="date">Jun 23</td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  <h2 class="section-title" style="margin-top: 8px;">Repo breakdown</h2>
+  <div class="repo-summary">
+    <table>
+      <thead><tr><th>Repo</th><th>Total</th><th>Merged</th><th>Open</th><th>Closed</th><th>+/-</th></tr></thead>
+      <tbody>
+        <tr><td class="repo-name">sensors</td><td>58</td><td>42</td><td>11</td><td>5</td><td><span class="add">+37,101</span> <span class="del">-5,903</span></td></tr>
+        <tr><td class="repo-name">agents</td><td>5</td><td>2</td><td>0</td><td>3</td><td><span class="add">+2,100</span> <span class="del">-334</span></td></tr>
+        <tr><td class="repo-name">pi-toolsmith</td><td>3</td><td>3</td><td>0</td><td>0</td><td><span class="add">+1,209</span> <span class="del">-461</span></td></tr>
+        <tr><td class="repo-name">data-airflow</td><td>1</td><td>0</td><td>0</td><td>1</td><td><span class="add">+600</span> <span class="del">-184</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="notes">
+    <p>Method: <code>gh pr list --repo patterninc/&lt;repo&gt; --author CHAOLIN99 --state all --search "created:&gt;=2026-05-01"</code> against each repo's GitHub remote, run 2026-07-14. "Opened" dates reflect PR creation, not merge; "Closed" means closed without merging (superseded, split into a different PR, or abandoned). Grouping into initiatives is inferred from PR titles/tickets, not from a project-tracker export.</p>
+  </footer>
+
+</div>
