@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import type { MetricFlowItem, PillStatus } from "../types";
+import type { CSSProperties } from "react";
+import type { MetricFlow, PillStatus } from "../types";
 
 /** Flips true one frame after mount, so bar widths transition in instead of popping. */
 function useGrown() {
@@ -9,6 +10,34 @@ function useGrown() {
     return () => cancelAnimationFrame(id);
   }, []);
   return grown;
+}
+
+/** 0% until mounted, then the real percentage — so the bar transitions in. */
+function growWidth(grown: boolean, pct: number): CSSProperties {
+  return { width: grown ? `${pct}%` : "0%" };
+}
+
+function MetricPair({ value, label }: { value: string; label: string }) {
+  return (
+    <>
+      <span className="mf-n">{value}</span>
+      <span className="mf-l">{label}</span>
+    </>
+  );
+}
+
+/** Shared "+added/-removed" rendering, used by PrTable, RepoBreakdownTable, and DiffBar's tooltip. */
+export function formatAddDel(added: number, removed: number) {
+  return `+${added.toLocaleString()} / -${removed.toLocaleString()}`;
+}
+
+export function AddDel({ added, removed }: { added: number; removed: number }) {
+  return (
+    <>
+      <span className="add">+{added.toLocaleString()}</span>{" "}
+      <span className="del">-{removed.toLocaleString()}</span>
+    </>
+  );
 }
 
 // ---- Repo distribution ----
@@ -23,7 +52,7 @@ export function RepoBarChart({ rows }: { rows: { repo: string; count: number }[]
           <div className="bar-track">
             <div
               className="bar-fill"
-              style={{ width: grown ? `${(r.count / max) * 100}%` : "0%" }}
+              style={growWidth(grown, (r.count / max) * 100)}
               title={`${r.repo}: ${r.count} PRs`}
             />
           </div>
@@ -49,7 +78,7 @@ export function StatusBar({
           <div
             key={s.label}
             className={`status-bar-seg seg-${s.variant}`}
-            style={{ width: grown ? `${(s.count / total) * 100}%` : "0%" }}
+            style={growWidth(grown, (s.count / total) * 100)}
             title={`${s.label}: ${s.count}`}
           />
         ))}
@@ -67,47 +96,32 @@ export function StatusBar({
 }
 
 // ---- Before → after compare bar (log-scaled when the ratio is large) ----
-export function CompareBar({ items }: { items: MetricFlowItem[] }) {
+export function CompareBar({ metricFlow }: { metricFlow: MetricFlow }) {
   const grown = useGrown();
-  const before = items.find((i) => i.variant === "before" && i.raw !== undefined);
-  const after = items.find((i) => i.variant === "after" && i.raw !== undefined);
-  const rest = items.filter((i) => i !== before && i !== after);
-
-  if (!before || !after) {
-    // No numeric pair to chart — fall back to the plain stat row.
-    return (
-      <>
-        {items.map((item, i) => (
-          <span className="mf-item" key={i}>
-            <span className="mf-n">{item.value}</span>
-            <span className="mf-l">{item.label}</span>
-          </span>
-        ))}
-      </>
-    );
-  }
-
+  const { before, after, extra } = metricFlow;
   const scale = (n: number) => Math.log10(Math.max(n, 1) + 1);
-  const maxScale = Math.max(scale(before.raw!), scale(after.raw!)) || 1;
+  const maxScale = Math.max(scale(before.raw), scale(after.raw)) || 1;
 
   return (
     <div className="compare-bar">
-      {[before, after].map((item) => (
-        <div className="compare-row" key={item.label}>
-          <span className={`mf-n ${item.variant}`}>{item.value}</span>
+      {([
+        ["before", before],
+        ["after", after],
+      ] as const).map(([variant, point]) => (
+        <div className="compare-row" key={variant}>
+          <span className={`mf-n ${variant}`}>{point.value}</span>
           <div className="compare-track">
             <div
-              className={`compare-fill ${item.variant}`}
-              style={{ width: grown ? `${(scale(item.raw!) / maxScale) * 100}%` : "0%" }}
+              className={`compare-fill ${variant}`}
+              style={growWidth(grown, (scale(point.raw) / maxScale) * 100)}
             />
           </div>
-          <span className="mf-l">{item.label}</span>
+          <span className="mf-l">{point.label}</span>
         </div>
       ))}
-      {rest.map((item, i) => (
+      {extra?.map((item, i) => (
         <div className="compare-extra" key={i}>
-          <span className="mf-n">{item.value}</span>
-          <span className="mf-l">{item.label}</span>
+          <MetricPair value={item.value} label={item.label} />
         </div>
       ))}
     </div>
@@ -119,16 +133,10 @@ export function DiffBar({ added, removed }: { added: number; removed: number }) 
   const grown = useGrown();
   const total = added + removed || 1;
   return (
-    <span className="diff-bar" title={`+${added} / -${removed}`}>
+    <span className="diff-bar" title={formatAddDel(added, removed)}>
       <span className="diff-bar-track">
-        <span
-          className="diff-bar-add"
-          style={{ width: grown ? `${(added / total) * 100}%` : "0%" }}
-        />
-        <span
-          className="diff-bar-del"
-          style={{ width: grown ? `${(removed / total) * 100}%` : "0%" }}
-        />
+        <span className="diff-bar-add" style={growWidth(grown, (added / total) * 100)} />
+        <span className="diff-bar-del" style={growWidth(grown, (removed / total) * 100)} />
       </span>
     </span>
   );

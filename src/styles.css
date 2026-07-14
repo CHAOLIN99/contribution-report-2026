@@ -24,7 +24,7 @@
   --shadow: 0 1px 2px oklch(0.21 0 0 / 4%), 0 8px 24px oklch(0.21 0 0 / 6%);
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: oklch(0.16 0 0);
     --surface: oklch(0.25 0 0);
     --surface-2: oklch(0.3 0 0);
@@ -59,17 +59,9 @@
   --signal: oklch(0.68 0.19 295); --signal-bg: oklch(0.3 0.06 295);
   --shadow: 0 1px 2px oklch(0 0 0 / 30%), 0 8px 24px oklch(0 0 0 / 40%);
 }
-:root[data-theme="light"] {
-  --bg: oklch(0.976 0 0); --surface: oklch(1 0 0); --surface-2: oklch(0.94 0 0); --text: oklch(0.21 0 0);
-  --muted: oklch(0.48 0 0); --faint: oklch(0.62 0 0); --border: oklch(0.21 0 0 / 10%);
-  --accent: oklch(0.66 0.19 255); --accent-2: oklch(0.6 0.17 253); --accent-soft: oklch(0.94 0.03 255);
-  --merged-bg: oklch(0.94 0.05 150); --merged-fg: oklch(0.5 0.14 150);
-  --open-bg: oklch(0.94 0.06 85); --open-fg: oklch(0.55 0.13 65);
-  --unmerged-bg: oklch(0.94 0.05 25); --unmerged-fg: oklch(0.55 0.18 25);
-  --add: oklch(0.5 0.14 150); --del: oklch(0.55 0.18 25);
-  --signal: oklch(0.52 0.28 295); --signal-bg: oklch(0.94 0.035 295);
-  --shadow: 0 1px 2px oklch(0.21 0 0 / 4%), 0 8px 24px oklch(0.21 0 0 / 6%);
-}
+/* No separate [data-theme="light"] block needed: it would be identical to
+   the base :root above, since :root already is the light palette and the
+   dark media query above is scoped to yield to an explicit light choice. */
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -143,12 +135,16 @@ h1 {
   gap: 10px;
   margin-bottom: 34px;
 }
-.stat {
+/* Shared card look for .stat, .overview, .case, section.theme, .repo-summary;
+   each keeps its own border-radius/padding/margin below. */
+.stat, .overview, .case, section.theme, .repo-summary {
   background: var(--surface);
   border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.stat {
   border-radius: 10px;
   padding: 14px 16px;
-  box-shadow: var(--shadow);
 }
 .stat .n {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -168,12 +164,9 @@ h1 {
 }
 
 .overview {
-  background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 22px 24px;
   margin-bottom: 40px;
-  box-shadow: var(--shadow);
 }
 .overview h2 {
   font-family: Georgia, "Iowan Old Style", serif;
@@ -242,12 +235,9 @@ p.section-sub {
 
 /* ---- case studies ---- */
 .case {
-  background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 26px 28px 24px;
   margin-bottom: 22px;
-  box-shadow: var(--shadow);
 }
 .case-head {
   display: flex;
@@ -382,12 +372,9 @@ p.section-sub {
 .result-callout b { color: var(--accent); }
 
 section.theme {
-  background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px 22px 8px;
   margin-bottom: 18px;
-  box-shadow: var(--shadow);
 }
 section.theme h3 {
   font-family: Georgia, "Iowan Old Style", serif;
@@ -469,12 +456,9 @@ p.evidence-label {
 }
 
 .repo-summary {
-  background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px 22px;
   margin-bottom: 40px;
-  box-shadow: var(--shadow);
 }
 .repo-summary table { width: 100%; min-width: 0; }
 .repo-summary td, .repo-summary th { white-space: nowrap; }

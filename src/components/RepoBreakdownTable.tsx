@@ -1,5 +1,5 @@
 import type { RepoBreakdownRow } from "../types";
-import { DiffBar } from "./charts";
+import { AddDel, DiffBar } from "./charts";
 
 export function RepoBreakdownTable({ rows }: { rows: RepoBreakdownRow[] }) {
   return (
@@ -25,8 +25,7 @@ export function RepoBreakdownTable({ rows }: { rows: RepoBreakdownRow[] }) {
               <td>{row.closed}</td>
               <td>
                 <DiffBar added={row.added} removed={row.removed} />
-                <span className="add">+{row.added.toLocaleString()}</span>{" "}
-                <span className="del">-{row.removed.toLocaleString()}</span>
+                <AddDel added={row.added} removed={row.removed} />
               </td>
             </tr>
           ))}

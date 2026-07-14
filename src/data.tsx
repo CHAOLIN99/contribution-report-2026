@@ -6,6 +6,7 @@ import type {
   StatItem,
   ThemeSection,
 } from "./types";
+import { pillLabel } from "./types";
 
 export const stats: StatItem[] = [
   { value: "67", label: "Total PRs" },
@@ -24,9 +25,9 @@ export const repoTally = [
 ];
 
 export const statusBreakdown = [
-  { label: "Merged", count: 47, variant: "merged" as const },
-  { label: "Open", count: 11, variant: "open" as const },
-  { label: "Closed", count: 9, variant: "unmerged" as const },
+  { label: pillLabel.merged, count: 47, variant: "merged" as const },
+  { label: pillLabel.open, count: 11, variant: "open" as const },
+  { label: pillLabel.unmerged, count: 9, variant: "unmerged" as const },
 ];
 
 export const overviewBullets = [
@@ -63,11 +64,9 @@ const PR = (repo: string, n: number) =>
 
 // ---- Case 1: partitioning ----
 const case1MetricFlow: MetricFlow = {
-  items: [
-    { value: "39M / 47GB", label: "before", variant: "before", raw: 39_000_000 },
-    { value: "1.6M / 7.7GB", label: "after (triggered only)", variant: "after", raw: 1_600_000 },
-    { value: "1 of 16", label: "partitions per query" },
-  ],
+  before: { value: "39M / 47GB", label: "before", raw: 39_000_000 },
+  after: { value: "1.6M / 7.7GB", label: "after (triggered only)", raw: 1_600_000 },
+  extra: [{ value: "1 of 16", label: "partitions per query" }],
   note: (
     <>
       then a 24–48h soak + <code>DROP TABLE …_old</code> reclaims ~47GB
@@ -175,19 +174,15 @@ const case4Prs: PrRow[] = [
 ];
 
 const case2MetricFlow: MetricFlow = {
-  items: [
-    { value: "~217,000", label: "sequential scan cost", variant: "before", raw: 217_000 },
-    { value: "~19", label: "index-scan plan cost", variant: "after", raw: 19 },
-  ],
+  before: { value: "~217,000", label: "sequential scan cost", raw: 217_000 },
+  after: { value: "~19", label: "index-scan plan cost", raw: 19 },
   note: <>~11,400× cheaper, read from the query's own EXPLAIN output</>,
 };
 
 const case3MetricFlow: MetricFlow = {
-  items: [
-    { value: "~720 + ~360", label: "workflow + terraform lines", variant: "before", raw: 1080 },
-    { value: "0", label: "deleted, redundant w/ Datadog", variant: "after", raw: 0 },
-    { value: "45 → 15", label: "endpoints, ranked by traffic" },
-  ],
+  before: { value: "~720 + ~360", label: "workflow + terraform lines", raw: 1080 },
+  after: { value: "0", label: "deleted, redundant w/ Datadog", raw: 0 },
+  extra: [{ value: "45 → 15", label: "endpoints, ranked by traffic" }],
 };
 
 export const cases: CaseStudy[] = [

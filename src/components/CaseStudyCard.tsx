@@ -22,7 +22,7 @@ export function CaseStudyCard({ study }: { study: CaseStudy }) {
 
       {study.metricFlow && (
         <div className="metric-flow">
-          <CompareBar items={study.metricFlow.items} />
+          <CompareBar metricFlow={study.metricFlow} />
           {study.metricFlow.note && <div className="mf-note">{study.metricFlow.note}</div>}
         </div>
       )}

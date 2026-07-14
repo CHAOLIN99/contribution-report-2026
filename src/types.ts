@@ -2,6 +2,12 @@ import type { ReactNode } from "react";
 
 export type PillStatus = "merged" | "open" | "unmerged";
 
+export const pillLabel: Record<PillStatus, string> = {
+  merged: "Merged",
+  open: "Open",
+  unmerged: "Closed",
+};
+
 export interface PrRow {
   repo: string;
   number: number;
@@ -20,16 +26,21 @@ export interface FlowStep {
   setBack?: boolean;
 }
 
-export interface MetricFlowItem {
+export interface MetricStat {
   value: string;
   label: string;
-  variant?: "before" | "after";
-  /** Numeric magnitude for the visual compare bar; log-scaled when the ratio is large. */
-  raw?: number;
+}
+
+/** A before/after point on the compare bar; raw is its magnitude, log-scaled when the ratio is large. */
+export interface MetricPoint extends MetricStat {
+  raw: number;
 }
 
 export interface MetricFlow {
-  items: MetricFlowItem[];
+  before: MetricPoint;
+  after: MetricPoint;
+  /** Extra plain stats shown alongside the compare bar (not part of the before/after pair). */
+  extra?: MetricStat[];
   note?: ReactNode;
 }
 
@@ -39,7 +50,6 @@ export interface CaseStudy {
   title: string;
   ticket: string;
   lead: ReactNode;
-  signalTag?: string;
   signal: ReactNode;
   narrative: ReactNode[];
   flow: FlowStep[];

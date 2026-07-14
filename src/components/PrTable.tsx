@@ -1,10 +1,6 @@
+import { pillLabel } from "../types";
 import type { PrRow } from "../types";
-
-const pillLabel: Record<PrRow["status"], string> = {
-  merged: "Merged",
-  open: "Open",
-  unmerged: "Closed",
-};
+import { AddDel } from "./charts";
 
 export function PrTable({ rows }: { rows: PrRow[] }) {
   return (
@@ -32,8 +28,7 @@ export function PrTable({ rows }: { rows: PrRow[] }) {
                 <span className={`pill ${row.status}`}>{pillLabel[row.status]}</span>
               </td>
               <td className="loc">
-                <span className="add">+{row.added}</span>{" "}
-                <span className="del">-{row.removed}</span>
+                <AddDel added={row.added} removed={row.removed} />
               </td>
               <td className="date">{row.opened}</td>
             </tr>
