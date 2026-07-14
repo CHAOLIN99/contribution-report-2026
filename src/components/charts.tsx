@@ -155,12 +155,20 @@ export function JumpNav({ items }: { items: { id: string; label: string }[] }) {
     return () => observer.disconnect();
   }, [items]);
 
+  const handleClick = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    history.pushState(null, "", `#${id}`);
+    setActive(id);
+  };
+
   return (
     <nav className="jump-nav" aria-label="Jump to section">
       {items.map((item) => (
         <a
           key={item.id}
           href={`#${item.id}`}
+          onClick={(e) => handleClick(e, item.id)}
           className={`jump-link${active === item.id ? " active" : ""}`}
         >
           {item.label}
