@@ -9,6 +9,7 @@ interface OverviewProps {
 }
 
 export function Overview({ bullets, repoTally, statusBreakdown }: OverviewProps) {
+  const totalPrs = statusBreakdown.reduce((sum, s) => sum + s.count, 0);
   return (
     <div className="overview">
       <h2>The short version</h2>
@@ -26,7 +27,7 @@ export function Overview({ bullets, repoTally, statusBreakdown }: OverviewProps)
 
       <div className="mini-dash">
         <div className="mini-dash-col">
-          <p className="mini-dash-label">67 PRs by status</p>
+          <p className="mini-dash-label">{totalPrs} PRs by status</p>
           <StatusBar segments={statusBreakdown} />
         </div>
         <div className="mini-dash-col">

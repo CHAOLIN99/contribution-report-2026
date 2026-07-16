@@ -26,9 +26,9 @@ export function App() {
       <header className="masthead">
         <div className="brand-rule" />
         <p className="eyebrow">Contribution report · Pattern</p>
-        <h1>My contributions — May 1 to Jul 14, 2026</h1>
+        <h1>My contributions — May 1 to Jul 16, 2026</h1>
         <p className="subhead">
-          I opened 67 pull requests across <code>agents</code>, <code>pi-toolsmith</code>,{" "}
+          I opened 73 pull requests across <code>agents</code>, <code>pi-toolsmith</code>,{" "}
           <code>sensors</code>, and <code>data-airflow</code>. Rather than list them all, this
           report walks the four investigations that drove most of them — what broke, how I
           found the cause, what I shipped, and what changed.

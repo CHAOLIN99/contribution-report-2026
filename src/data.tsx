@@ -9,25 +9,25 @@ import type {
 import { pillLabel } from "./types";
 
 export const stats: StatItem[] = [
-  { value: "67", label: "Total PRs" },
-  { value: "47", label: "Merged" },
-  { value: "11", label: "Still open" },
-  { value: "9", label: "Closed, unmerged" },
-  { value: "+40,910", label: "Lines added", variant: "add" },
-  { value: "-6,882", label: "Lines removed", variant: "del" },
+  { value: "73", label: "Total PRs" },
+  { value: "48", label: "Merged" },
+  { value: "15", label: "Still open" },
+  { value: "10", label: "Closed, unmerged" },
+  { value: "+42,290", label: "Lines added", variant: "add" },
+  { value: "-7,109", label: "Lines removed", variant: "del" },
 ];
 
 export const repoTally = [
-  { repo: "sensors", count: 58 },
-  { repo: "agents", count: 5 },
-  { repo: "pi-toolsmith", count: 3 },
+  { repo: "sensors", count: 61 },
+  { repo: "agents", count: 6 },
+  { repo: "pi-toolsmith", count: 5 },
   { repo: "data-airflow", count: 1 },
 ];
 
 export const statusBreakdown = [
-  { label: pillLabel.merged, count: 47, variant: "merged" as const },
-  { label: pillLabel.open, count: 11, variant: "open" as const },
-  { label: pillLabel.unmerged, count: 9, variant: "unmerged" as const },
+  { label: pillLabel.merged, count: 48, variant: "merged" as const },
+  { label: pillLabel.open, count: 15, variant: "open" as const },
+  { label: pillLabel.unmerged, count: 10, variant: "unmerged" as const },
 ];
 
 export const overviewBullets = [
@@ -76,6 +76,26 @@ const case1MetricFlow: MetricFlow = {
 
 // ---- Case 4: PR evidence table ----
 const case4Prs: PrRow[] = [
+  {
+    repo: "sensors",
+    number: 1091,
+    url: PR("sensors", 1091),
+    title: "terraform(sensors-api): enable org access enforcement in production",
+    status: "open",
+    added: 1,
+    removed: 0,
+    opened: "Jul 14",
+  },
+  {
+    repo: "sensors",
+    number: 1092,
+    url: PR("sensors", 1092),
+    title: "fix(sensors-api): deploy missing org_id fix to prod (PI-7920)",
+    status: "unmerged",
+    added: 22,
+    removed: 0,
+    opened: "Jul 14",
+  },
   {
     repo: "sensors",
     number: 1089,
@@ -199,26 +219,34 @@ export const cases: CaseStudy[] = [
     ),
     signal: (
       <>
-        <code>sensor_version_state</code> had grown to ~39M rows / 47GB, and
-        every per-sensor query scanned the whole table. In staging and prod
-        that showed up as Aurora ACU pressure and slow batch-eval writes. The
-        table needed to shrink <em>and</em> change how it was written — an
-        index alone wouldn't fix it.
+        <code>PI-7372</code> came in as an audit ticket — map every
+        read/write site for <code>sensor_version_state</code> and evaluate
+        moving it into Heimdall (extending <code>sensor_version_evals</code>)
+        instead of Postgres. Doing that audit is what surfaced the more
+        urgent problem: the table had grown to ~39M rows / 47GB, every
+        per-sensor query scanned the whole thing, and in staging and prod
+        that showed up as Aurora ACU pressure and slow batch-eval writes.
       </>
     ),
     narrative: [
       <>
-        I audited the writes first: workers wrote a state row for{" "}
-        <b>every</b> evaluation, but only <em>triggered</em> rows are ever
-        read anywhere in the codebase — non-triggered writes were ~93% of
-        volume for zero downstream use. The fix had two parts that had to
-        land in order: (1) partition the table by{" "}
-        <code>HASH(sensor_id)</code> so per-sensor reads and bulk
-        expiry/turn-off updates prune to one partition instead of scanning
-        all sixteen, and (2) stop writing non-triggered rows so the lean
-        table stays lean. Since it was a live-data cutover, the migration
-        carried its own drift guard that aborts the swap rather than risk
-        corrupting the table.
+        The audit closed off a near-term Heimdall move on its own:{" "}
+        <code>SensorsController.putSensor</code> and <code>patchSensor</code>{" "}
+        wrap state writes in the same transaction as <code>sensor_versions</code>{" "}
+        and <code>sensor_action_assets</code>, which Heimdall can't join into,
+        and <code>BatchActionExecutor</code> / <code>GenerateActionAssetProcessor</code>{" "}
+        both aggregate 400k+ JSONB rows per call — latency a cross-service
+        read wasn't going to beat. With the migration parked, I audited the
+        writes instead: workers wrote a state row for <b>every</b> evaluation,
+        but only <em>triggered</em> rows are ever read anywhere in the
+        codebase — non-triggered writes were ~93% of volume for zero
+        downstream use. The fix had two parts that had to land in order: (1)
+        partition the table by <code>HASH(sensor_id)</code> so per-sensor
+        reads and bulk expiry/turn-off updates prune to one partition instead
+        of scanning all sixteen, and (2) stop writing non-triggered rows so
+        the lean table stays lean. Since it was a live-data cutover, the
+        migration carried its own drift guard that aborts the swap rather
+        than risk corrupting the table.
       </>,
     ],
     flow: [
@@ -410,7 +438,7 @@ export const cases: CaseStudy[] = [
     id: "deploy-gate",
     navLabel: "Deploy gate",
     title: "A deploy-gate suite — with Datadog picking what to test",
-    ticket: "sensors-api-test-suite",
+    ticket: "PI-6787",
     lead: (
       <>
         Built a stage→prod deploy gate, let 90 days of Datadog traffic rank
@@ -420,11 +448,12 @@ export const cases: CaseStudy[] = [
     ),
     signal: (
       <>
-        sensors-api had no synthetic coverage between a stage deploy and a
-        prod deploy — a regression could reach production with only manual
-        QA in the way. The real question wasn't "add tests," it was which of
-        ~45 endpoints were worth gating on, and whether Datadog already
-        solved part of the problem.
+        <code>PI-6787</code> landed as a research-and-design epic, not an
+        implementation ticket: sensors-api had no synthetic coverage between
+        a stage deploy and a prod deploy, and before writing any tests the
+        ask was a recommendation on tooling and workflow design. The real
+        question wasn't "add tests," it was which of ~45 endpoints were worth
+        gating on, and whether Datadog already solved part of the problem.
       </>
     ),
     narrative: [
@@ -611,6 +640,28 @@ export const cases: CaseStudy[] = [
           </>
         ),
       },
+      {
+        date: "Jul 14 · prod flip, in flight",
+        label: (
+          <>
+            Prod enforcement PR open, held for soak time{" "}
+            {prRef("#1091", PR("sensors", 1091))}
+          </>
+        ),
+        body: (
+          <>
+            Staging has been green on every smoke run since the #1089 fix. A
+            single PR bundles the prod tfvars flip with a deploy of{" "}
+            <code>main</code> (already carrying the fix) — a separate
+            backport-only PR ({prRef("#1092", PR("sensors", 1092))}) was
+            opened, then closed in favor of this one. Not merging yet: the
+            post-fix soak is only ~16h old against a 48h bar, and an unrelated{" "}
+            <code>sensor-variables-lifecycle</code> CI job has been failing
+            both before and after the fix and needs to be confirmed unrelated
+            first.
+          </>
+        ),
+      },
     ],
     result: (
       <>
@@ -618,7 +669,8 @@ export const cases: CaseStudy[] = [
         case-insensitive comparisons and documented M2M contracts — and
         because I watched the staged rollout rather than fire-and-forgetting
         it, the one regression got caught, root-caused, and fixed same-day
-        instead of reaching prod.
+        instead of reaching prod. The staging flag is live and stable; the
+        prod flip is staged behind an open PR pending a 48h soak.
       </>
     ),
     prTable: case4Prs,
@@ -632,10 +684,42 @@ export const themes: ThemeSection[] = [
       <>
         Wiring sensors-api into the MCP surface used by agents: forwarding
         org/brand/version context through headers, then completing the
-        coverage CRUD + provenance envelope and toggle-gated rollout.
+        coverage CRUD + provenance envelope, toggle-gated rollout, and
+        hardening MCP response payloads that carry unvalidated Sensors API
+        content back to the LLM.
       </>
     ),
     prTable: [
+      {
+        repo: "agents",
+        number: 2528,
+        url: PR("agents", 2528),
+        title: "[PI-7507] Workflow-builder assignability for sensors-api MCP",
+        status: "open",
+        added: 140,
+        removed: 19,
+        opened: "Jul 16",
+      },
+      {
+        repo: "pi-toolsmith",
+        number: 1044,
+        url: PR("pi-toolsmith", 1044),
+        title: "[PI-7507] Sensors API MCP completion — coverage tools + provenance envelope",
+        status: "merged",
+        added: 644,
+        removed: 167,
+        opened: "Jul 15",
+      },
+      {
+        repo: "pi-toolsmith",
+        number: 1048,
+        url: PR("pi-toolsmith", 1048),
+        title: "[PI-7507] Bump sensors-api shim to 1.0.1 for deploy",
+        status: "open",
+        added: 3,
+        removed: 3,
+        opened: "Jul 16",
+      },
       {
         repo: "pi-toolsmith",
         number: 766,
@@ -807,6 +891,11 @@ export const themes: ThemeSection[] = [
         with abort propagation, returned <code>total: null</code> when the
         count can't finish rather than 503ing the whole response, and cached
         the windowed count for 300s to keep the deploy-gate path warm.
+        Manually exercising the DRAFT-promotion fix from {prRef("#1064", PR("sensors", 1064))}{" "}
+        turned up a design gap ({prRef("#1094", PR("sensors", 1094))}): promoting
+        a draft archives the previously-live version, which the existing
+        dependency guard then blocks whenever that version is still
+        referenced by a workflow or a chained sensor — currently in review.
       </>
     ),
     prTable: [
@@ -879,6 +968,16 @@ export const themes: ThemeSection[] = [
         added: 485,
         removed: 15,
         opened: "Jul 1",
+      },
+      {
+        repo: "sensors",
+        number: 1094,
+        url: PR("sensors", 1094),
+        title: "[PI-7863] Fix draft promotion visibility cascade",
+        status: "open",
+        added: 449,
+        removed: 35,
+        opened: "Jul 15",
       },
       {
         repo: "sensors",
@@ -977,8 +1076,8 @@ export const themes: ThemeSection[] = [
 ];
 
 export const repoBreakdown: RepoBreakdownRow[] = [
-  { repo: "sensors", total: 58, merged: 42, open: 11, closed: 5, added: 37101, removed: 5903 },
-  { repo: "agents", total: 5, merged: 2, open: 0, closed: 3, added: 2100, removed: 334 },
-  { repo: "pi-toolsmith", total: 3, merged: 3, open: 0, closed: 0, added: 1209, removed: 461 },
+  { repo: "sensors", total: 61, merged: 42, open: 13, closed: 6, added: 37594, removed: 5941 },
+  { repo: "agents", total: 6, merged: 2, open: 1, closed: 3, added: 2240, removed: 353 },
+  { repo: "pi-toolsmith", total: 5, merged: 4, open: 1, closed: 0, added: 1856, removed: 631 },
   { repo: "data-airflow", total: 1, merged: 0, open: 0, closed: 1, added: 600, removed: 184 },
 ];
