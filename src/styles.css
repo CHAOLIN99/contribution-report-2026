@@ -342,6 +342,22 @@ p.section-sub {
   max-width: 70ch;
 }
 
+/* ---- explicit value-connection line ---- */
+.why-value {
+  border-left: 3px solid;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  margin: 0 0 18px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  max-width: 74ch;
+}
+.why-value b { font-variant-numeric: tabular-nums; color: inherit; }
+.why-value-data-fanatics { border-color: var(--value-data-fanatics-fg); background: var(--value-data-fanatics-bg); color: var(--value-data-fanatics-fg); }
+.why-value-game-changers { border-color: var(--value-game-changers-fg); background: var(--value-game-changers-bg); color: var(--value-game-changers-fg); }
+.why-value-partner-obsession { border-color: var(--value-partner-obsession-fg); background: var(--value-partner-obsession-bg); color: var(--value-partner-obsession-fg); }
+.why-value-team-of-doers { border-color: var(--value-team-of-doers-fg); background: var(--value-team-of-doers-bg); color: var(--value-team-of-doers-fg); }
+
 /* ---- case studies ---- */
 .case {
   border-radius: 12px;

@@ -14,6 +14,7 @@ export function CaseStudyCard({ study }: { study: CaseStudy }) {
         <span className="tag">In plain terms</span>
         <p>{study.plainSummary}</p>
       </div>
+      <div className={`why-value why-value-${study.value}`}>{study.whyValue}</div>
       <div className="case-signal">
         <span className="tag">Signal</span>
         <span>{study.signal}</span>

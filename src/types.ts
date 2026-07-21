@@ -64,6 +64,8 @@ export interface CaseStudy {
   lead: ReactNode;
   /** Plain-English "what this means" callout, written for a non-technical reader. */
   plainSummary: ReactNode;
+  /** Explicit "why this is [value]" line, tying the work back to the value's own definition. */
+  whyValue: ReactNode;
   signal: ReactNode;
   narrative: ReactNode[];
   flow: FlowStep[];
@@ -78,6 +80,8 @@ export interface ThemeSection {
   description: ReactNode;
   /** Plain-English "what this means" callout, written for a non-technical reader. */
   plainSummary: ReactNode;
+  /** Explicit "why this is [value]" line, tying the work back to the value's own definition. */
+  whyValue: ReactNode;
   prTable: PrRow[];
 }
 

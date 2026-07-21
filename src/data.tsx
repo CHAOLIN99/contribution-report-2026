@@ -273,6 +273,15 @@ export const cases: CaseStudy[] = [
         with no loss of anything anyone needed.
       </>
     ),
+    whyValue: (
+      <>
+        <b>Why Data Fanatics:</b> the fix came from measuring real usage —
+        auditing 39M rows of actual write/read behavior — rather than
+        assumptions. That's the value's own definition in practice:
+        leveraging real data points to optimize the system, not guessing at
+        what to change.
+      </>
+    ),
     signal: (
       <>
         <code>PI-7372</code> came in as an audit ticket — map every
@@ -410,6 +419,14 @@ export const cases: CaseStudy[] = [
         evidence, not from a hunch.
       </>
     ),
+    whyValue: (
+      <>
+        <b>Why Data Fanatics:</b> the diagnosis came from the database's own{" "}
+        <code>EXPLAIN</code> data — a measured ~217,000 vs. ~19 cost — not a
+        hunch. Automating and optimizing the system starts with trusting what
+        the data says over what seems intuitively true.
+      </>
+    ),
     signal: (
       <>
         Batches were getting stuck in a "fetching" state after ECS scaled
@@ -523,6 +540,15 @@ export const cases: CaseStudy[] = [
         duplicated a tool we already paid for — so I challenged the original
         plan, deleted the redundant build, and shipped something leaner that
         works alongside what we already had.
+      </>
+    ),
+    whyValue: (
+      <>
+        <b>Why Game Changers:</b> the bold move wasn't building the gate —
+        it was challenging an already-approved, partially-built plan
+        mid-project and deleting ~1,000 lines of sunk-cost work once the
+        evidence said there was a better way. Being bold enough to undo your
+        own work is what this value asks for.
       </>
     ),
     signal: (
@@ -675,6 +701,15 @@ export const cases: CaseStudy[] = [
         before it reached a real customer.
       </>
     ),
+    whyValue: (
+      <>
+        <b>Why Partner Obsession:</b> tenancy boundaries are the literal
+        mechanism that keeps one partner brand's data invisible to every
+        other brand. Closing those gaps carefully — and watching the rollout
+        instead of walking away after merge — is what long-term trust with
+        the brands we partner with requires.
+      </>
+    ),
     signal: (
       <>
         A security audit surfaced org-scoping gaps across sensors-api
@@ -791,6 +826,13 @@ export const themes: ThemeSection[] = [
         sensors data without either team having to work around the other.
       </>
     ),
+    whyValue: (
+      <>
+        <b>Why Team of Doers:</b> this only works because two separate teams'
+        systems — agents and sensors — were coordinated to act as one. No
+        single team could have shipped this end to end on its own.
+      </>
+    ),
     prTable: [
       {
         repo: "agents",
@@ -902,6 +944,14 @@ export const themes: ThemeSection[] = [
         traceability could otherwise get lost between teams.
       </>
     ),
+    whyValue: (
+      <>
+        <b>Why Team of Doers:</b> landing one change across three
+        team-owned codebases together, rather than three separate
+        uncoordinated changes, is exactly the "teams build great things"
+        philosophy this value describes.
+      </>
+    ),
     prTable: [
       {
         repo: "sensors",
@@ -961,6 +1011,14 @@ export const themes: ThemeSection[] = [
         with. I built the access gate — across two separate systems — that
         makes sure only the right users can see them, protecting that
         feature's value for the partners it's meant for.
+      </>
+    ),
+    whyValue: (
+      <>
+        <b>Why Partner Obsession:</b> this gate exists solely to protect a
+        capability that partner brands pay for from leaking to users it
+        wasn't built for — long-term value for partners over short-term
+        convenience.
       </>
     ),
     prTable: [
@@ -1026,6 +1084,13 @@ export const themes: ThemeSection[] = [
         changes half-done, an audit trail so changes are traceable, and a fix
         for an API that was timing out and erroring under load — it now
         degrades gracefully instead of failing outright.
+      </>
+    ),
+    whyValue: (
+      <>
+        <b>Why Partner Obsession:</b> none of this is glamorous — it's the
+        reliability and correctness work that keeps the product partner
+        brands use every day from breaking underneath them.
       </>
     ),
     prTable: [
@@ -1137,6 +1202,13 @@ export const themes: ThemeSection[] = [
         long-lived passwords toward short-lived, automatically-rotated
         credentials — hardened how workers shut down so in-flight work isn't
         dropped, and retired old rules and code paths nobody used anymore.
+      </>
+    ),
+    whyValue: (
+      <>
+        <b>Why Game Changers:</b> retiring legacy auth and dead code before
+        they cause an incident is choosing to challenge "it's always worked
+        this way" ahead of being forced to.
       </>
     ),
     prTable: [

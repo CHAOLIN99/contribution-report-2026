@@ -10,6 +10,7 @@ export function ThemeSectionCard({ section }: { section: ThemeSection }) {
         <span className="tag">In plain terms</span>
         <p>{section.plainSummary}</p>
       </div>
+      <div className={`why-value why-value-${section.value}`}>{section.whyValue}</div>
       <PrTable rows={section.prTable} />
     </section>
   );
