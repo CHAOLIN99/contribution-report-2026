@@ -5,8 +5,44 @@ import type {
   RepoBreakdownRow,
   StatItem,
   ThemeSection,
+  ValueDef,
 } from "./types";
 import { pillLabel } from "./types";
+
+export const values: ValueDef[] = [
+  {
+    id: "data-fanatics",
+    name: "Data Fanatics",
+    officialLine:
+      "The company leverages trillions of data points and machine learning to optimize and automate e-commerce growth for brands.",
+    plainLine:
+      "Decisions get made from real numbers, not guesses — measuring what's actually happening before changing anything.",
+  },
+  {
+    id: "game-changers",
+    name: "Game Changers",
+    officialLine:
+      "Employees are expected to be bold, challenge the status quo, and drive innovation.",
+    plainLine:
+      "Willing to question an existing plan — including my own already-built work — and redo it when the evidence says there's a better way.",
+  },
+  {
+    id: "partner-obsession",
+    name: "Partner Obsession",
+    officialLine:
+      "The company prioritizes building long-term, profitable growth for the brands they partner with.",
+    plainLine:
+      "Protecting the partner brands' data, uptime, and day-to-day product experience is the point of the work, not a side effect of it.",
+  },
+  {
+    id: "team-of-doers",
+    name: "Team of Doers",
+    officialLine:
+      "A collaborative, action-oriented philosophy built on the belief that teams build great things rather than isolated individuals.",
+    plainLine:
+      "Following through across other teams' systems and repos so the whole thing works end to end, not just my own piece of it.",
+  },
+];
 
 export const stats: StatItem[] = [
   { value: "73", label: "Total PRs" },
@@ -32,23 +68,32 @@ export const statusBreakdown = [
 
 export const overviewBullets = [
   <>
-    <b>Partitioned a runaway Postgres table (PI-7372)</b> to stop it driving
-    Aurora cost in staging and prod.
+    <b>Data Fanatics</b> — partitioned a runaway database table down 96%
+    (PI-7372) and fixed a claim-path slowdown, both diagnosed from measured
+    evidence, not guesswork.
   </>,
   <>
-    <b>Fixed a claim-path query regression</b> on that same table family —
-    diagnosed from its <code>EXPLAIN</code> plan, not guesswork.
+    <b>Game Changers</b> — built a deploy-gate test suite, then deleted a
+    ~720-line home-grown monitor once the data showed it was redundant, and
+    modernized how our systems authenticate and shut down.
   </>,
   <>
-    <b>Built a deploy-gate test suite from scratch</b>, then deleted a
-    ~720-line home-grown monitor after a Datadog audit showed it was
-    redundant. That same audit picked which 15 of ~45 endpoints were worth
-    testing.
+    <b>Partner Obsession</b> — hardened org / tenancy access control route by
+    route, protecting every partner brand's data boundary, and shipped the
+    reliability fixes partner-facing features depend on.
   </>,
   <>
-    <b>Hardened org / tenancy access control</b> route by route — and caught
-    and fixed the one production regression the rollout produced, same day.
+    <b>Team of Doers</b> — coordinated cross-repo, cross-team work wiring
+    sensors data into the agents product and tracing every automated action
+    back to its source.
   </>,
+];
+
+export const valueTally = [
+  { id: "data-fanatics" as const, count: 9 },
+  { id: "game-changers" as const, count: 20 },
+  { id: "partner-obsession" as const, count: 23 },
+  { id: "team-of-doers" as const, count: 13 },
 ];
 
 function prRef(label: string, url: string) {
@@ -208,6 +253,7 @@ const case3MetricFlow: MetricFlow = {
 export const cases: CaseStudy[] = [
   {
     id: "partitioning",
+    value: "data-fanatics",
     navLabel: "ACU blow-up",
     title: "Partitioning sensor_version_state to stop an ACU blow-up",
     ticket: "PI-7372",
@@ -215,6 +261,16 @@ export const cases: CaseStudy[] = [
       <>
         Cut a <b>39M-row / 47GB</b> table down to <b>1.6M / 7.7GB</b> and made
         every query touch one partition instead of sixteen.
+      </>
+    ),
+    plainSummary: (
+      <>
+        One of our databases had quietly grown to 39 million rows and was
+        driving up cloud costs and slowing down writes. Instead of guessing at
+        a fix, I measured what was actually being stored — and found 93% of
+        it was never read again by anything. Shrinking the table to just the
+        data that's actually used cut it by 96% and made every lookup faster,
+        with no loss of anything anyone needed.
       </>
     ),
     signal: (
@@ -333,6 +389,7 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "claim-path",
+    value: "data-fanatics",
     navLabel: "Query-plan fix",
     title: "A query-plan regression on the claim path",
     ticket: "actions-processor",
@@ -341,6 +398,16 @@ export const cases: CaseStudy[] = [
         Found a claim query running at ~<b>217,000</b> cost where the right
         index-scan plan costs ~<b>19</b> — by reading its{" "}
         <code>EXPLAIN</code> output, not guessing.
+      </>
+    ),
+    plainSummary: (
+      <>
+        Work was getting randomly stuck, and separately a busy period made a
+        core system crawl. Rather than guess at the cause, I measured exactly
+        how the database was running the slow request and found it was doing
+        over 11,000× more work than it needed to. Rewriting that one query
+        removed the slowdown — a fix that only comes from reading the actual
+        evidence, not from a hunch.
       </>
     ),
     signal: (
@@ -436,6 +503,7 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "deploy-gate",
+    value: "game-changers",
     navLabel: "Deploy gate",
     title: "A deploy-gate suite — with Datadog picking what to test",
     ticket: "PI-6787",
@@ -444,6 +512,17 @@ export const cases: CaseStudy[] = [
         Built a stage→prod deploy gate, let 90 days of Datadog traffic rank
         the <b>15</b> endpoints worth gating, and deleted a redundant{" "}
         <b>~720-line</b> home-grown monitor.
+      </>
+    ),
+    plainSummary: (
+      <>
+        Before this, a broken change could reach real customers with only
+        manual review standing in the way. I built an automated safety check
+        that runs before every release. Partway through, the evidence showed
+        we were about to ship a ~1,000-line custom monitoring system that
+        duplicated a tool we already paid for — so I challenged the original
+        plan, deleted the redundant build, and shipped something leaner that
+        works alongside what we already had.
       </>
     ),
     signal: (
@@ -573,6 +652,7 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "org-access",
+    value: "partner-obsession",
     navLabel: "Org access",
     title: "Org & tenancy access hardening",
     ticket: "PI-6651 → PI-7873 / 7901 / 7920",
@@ -581,6 +661,18 @@ export const cases: CaseStudy[] = [
         Closed org-scoping gaps route by route across read and write paths —
         and caught the one regression the staged rollout produced the{" "}
         <b>same day</b>.
+      </>
+    ),
+    plainSummary: (
+      <>
+        Every partner brand's data has to stay separate from every other
+        brand's data — that boundary is the foundation of trust with the
+        brands we work with. An audit found a few places where that
+        separation could be bypassed. I closed each one carefully, route by
+        route, because moving too fast risked locking out legitimate internal
+        tools as much as leaving a gap open risked a real breach. When the
+        rollout did cause one hiccup, I caught and fixed it the same day —
+        before it reached a real customer.
       </>
     ),
     signal: (
@@ -679,6 +771,7 @@ export const cases: CaseStudy[] = [
 
 export const themes: ThemeSection[] = [
   {
+    value: "team-of-doers",
     title: "MCP / agent integration (sensors-api ↔ agents)",
     description: (
       <>
@@ -687,6 +780,15 @@ export const themes: ThemeSection[] = [
         coverage CRUD + provenance envelope, toggle-gated rollout, and
         hardening MCP response payloads that carry unvalidated Sensors API
         content back to the LLM.
+      </>
+    ),
+    plainSummary: (
+      <>
+        Our AI agent product and our sensors product are owned by different
+        teams and built as separate systems, but need to talk to each other
+        reliably. This is the cross-team plumbing work — passing the right
+        context between the two systems — so the agents team can build on
+        sensors data without either team having to work around the other.
       </>
     ),
     prTable: [
@@ -783,12 +885,21 @@ export const themes: ThemeSection[] = [
     ],
   },
   {
+    value: "team-of-doers",
     title: "Source-app lineage & resource-context typing",
     description: (
       <>
         Tier-1 lineage enforcement at the agents invocation boundary, plus
         promoting resource_context payload fields to typed columns across
         sensors and data-airflow.
+      </>
+    ),
+    plainSummary: (
+      <>
+        Coordinated a change across three separate codebases, owned by
+        different teams, so every automated action can be traced back to
+        which system originally requested it — closing a gap where that
+        traceability could otherwise get lost between teams.
       </>
     ),
     prTable: [
@@ -835,12 +946,21 @@ export const themes: ThemeSection[] = [
     ],
   },
   {
+    value: "partner-obsession",
     title: "Pattern-user gating for recommendations",
     description: (
       <>
         A two-part gate restricting recommendation surfaces to Pattern
         users, split across the sensors-api route layer and the agents
         invocation layer.
+      </>
+    ),
+    plainSummary: (
+      <>
+        Recommendations are a premium capability for the brands we work
+        with. I built the access gate — across two separate systems — that
+        makes sure only the right users can see them, protecting that
+        feature's value for the partners it's meant for.
       </>
     ),
     prTable: [
@@ -877,6 +997,7 @@ export const themes: ThemeSection[] = [
     ],
   },
   {
+    value: "partner-obsession",
     title: "Feature & API work",
     description: (
       <>
@@ -896,6 +1017,15 @@ export const themes: ThemeSection[] = [
         a draft archives the previously-live version, which the existing
         dependency guard then blocks whenever that version is still
         referenced by a workflow or a chained sensor — currently in review.
+      </>
+    ),
+    plainSummary: (
+      <>
+        The day-to-day features and reliability fixes that partner brands
+        actually touch: safer database updates so a failure can't leave
+        changes half-done, an audit trail so changes are traceable, and a fix
+        for an API that was timing out and erroring under load — it now
+        degrades gracefully instead of failing outright.
       </>
     ),
     prTable: [
@@ -992,12 +1122,21 @@ export const themes: ThemeSection[] = [
     ],
   },
   {
+    value: "game-changers",
     title: "Infra, runtime & decommissioning",
     description: (
       <>
         ECS/container lifecycle hardening (graceful shutdown, scale-in
         protection), RDS Proxy IAM auth groundwork, and sensors-ui CORS
         decommissioning.
+      </>
+    ),
+    plainSummary: (
+      <>
+        Modernized how our systems authenticate to databases — moving off
+        long-lived passwords toward short-lived, automatically-rotated
+        credentials — hardened how workers shut down so in-flight work isn't
+        dropped, and retired old rules and code paths nobody used anymore.
       </>
     ),
     prTable: [

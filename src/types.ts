@@ -44,12 +44,26 @@ export interface MetricFlow {
   note?: ReactNode;
 }
 
+export type ValueId = "game-changers" | "data-fanatics" | "team-of-doers" | "partner-obsession";
+
+export interface ValueDef {
+  id: ValueId;
+  name: string;
+  /** The official company-value line, quoted as given. */
+  officialLine: string;
+  /** A one-sentence, jargon-free restatement for non-technical readers. */
+  plainLine: string;
+}
+
 export interface CaseStudy {
   id: string;
+  value: ValueId;
   navLabel: string;
   title: string;
   ticket: string;
   lead: ReactNode;
+  /** Plain-English "what this means" callout, written for a non-technical reader. */
+  plainSummary: ReactNode;
   signal: ReactNode;
   narrative: ReactNode[];
   flow: FlowStep[];
@@ -59,8 +73,11 @@ export interface CaseStudy {
 }
 
 export interface ThemeSection {
+  value: ValueId;
   title: string;
   description: ReactNode;
+  /** Plain-English "what this means" callout, written for a non-technical reader. */
+  plainSummary: ReactNode;
   prTable: PrRow[];
 }
 

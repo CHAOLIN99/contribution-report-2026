@@ -22,6 +22,14 @@
   --signal: oklch(0.52 0.28 295);
   --signal-bg: oklch(0.94 0.035 295);
   --shadow: 0 1px 2px oklch(0.21 0 0 / 4%), 0 8px 24px oklch(0.21 0 0 / 6%);
+  --value-data-fanatics-fg: oklch(0.55 0.13 200);
+  --value-data-fanatics-bg: oklch(0.94 0.03 200);
+  --value-game-changers-fg: oklch(0.55 0.19 45);
+  --value-game-changers-bg: oklch(0.94 0.05 45);
+  --value-partner-obsession-fg: oklch(0.52 0.28 295);
+  --value-partner-obsession-bg: oklch(0.94 0.035 295);
+  --value-team-of-doers-fg: oklch(0.5 0.14 150);
+  --value-team-of-doers-bg: oklch(0.94 0.05 150);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -46,6 +54,14 @@
     --signal: oklch(0.68 0.19 295);
     --signal-bg: oklch(0.3 0.06 295);
     --shadow: 0 1px 2px oklch(0 0 0 / 30%), 0 8px 24px oklch(0 0 0 / 40%);
+    --value-data-fanatics-fg: oklch(0.78 0.12 200);
+    --value-data-fanatics-bg: oklch(0.3 0.05 200);
+    --value-game-changers-fg: oklch(0.78 0.14 45);
+    --value-game-changers-bg: oklch(0.32 0.06 45);
+    --value-partner-obsession-fg: oklch(0.68 0.19 295);
+    --value-partner-obsession-bg: oklch(0.3 0.06 295);
+    --value-team-of-doers-fg: oklch(0.75 0.14 160);
+    --value-team-of-doers-bg: oklch(0.32 0.06 150);
   }
 }
 :root[data-theme="dark"] {
@@ -58,6 +74,10 @@
   --add: oklch(0.75 0.14 160); --del: oklch(0.71 0.16 20);
   --signal: oklch(0.68 0.19 295); --signal-bg: oklch(0.3 0.06 295);
   --shadow: 0 1px 2px oklch(0 0 0 / 30%), 0 8px 24px oklch(0 0 0 / 40%);
+  --value-data-fanatics-fg: oklch(0.78 0.12 200); --value-data-fanatics-bg: oklch(0.3 0.05 200);
+  --value-game-changers-fg: oklch(0.78 0.14 45); --value-game-changers-bg: oklch(0.32 0.06 45);
+  --value-partner-obsession-fg: oklch(0.68 0.19 295); --value-partner-obsession-bg: oklch(0.3 0.06 295);
+  --value-team-of-doers-fg: oklch(0.75 0.14 160); --value-team-of-doers-bg: oklch(0.32 0.06 150);
 }
 /* No separate [data-theme="light"] block needed: it would be identical to
    the base :root above, since :root already is the light palette and the
@@ -65,7 +85,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-.case, #overview, #other-initiatives { scroll-margin-top: 20px; }
+.case, #overview, .value-section, #repo-breakdown { scroll-margin-top: 20px; }
 body {
   margin: 0;
   background: var(--bg);
@@ -75,7 +95,7 @@ body {
   line-height: 1.58;
 }
 .page {
-  max-width: 900px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 56px 24px 80px;
 }
@@ -217,6 +237,33 @@ h1 {
 }
 .repo-chip b { color: var(--text); font-variant-numeric: tabular-nums; }
 
+.overview-value-tally {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+.value-chip {
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 5px 13px;
+  text-decoration: none;
+  transition: filter 0.15s;
+}
+.value-chip:hover { filter: brightness(0.95); }
+.value-chip b { font-variant-numeric: tabular-nums; }
+.value-chip-data-fanatics { background: var(--value-data-fanatics-bg); color: var(--value-data-fanatics-fg); }
+.value-chip-game-changers { background: var(--value-game-changers-bg); color: var(--value-game-changers-fg); }
+.value-chip-partner-obsession { background: var(--value-partner-obsession-bg); color: var(--value-partner-obsession-fg); }
+.value-chip-team-of-doers { background: var(--value-team-of-doers-bg); color: var(--value-team-of-doers-fg); }
+.value-tally-note {
+  color: var(--faint);
+  font-size: 12px;
+  margin: 10px 0 0;
+  max-width: 68ch;
+}
+
 h2.section-title {
   font-family: Georgia, "Iowan Old Style", serif;
   font-size: 15px;
@@ -231,6 +278,68 @@ p.section-sub {
   font-size: 13.5px;
   margin: 0 0 18px;
   max-width: 68ch;
+}
+
+/* ---- value sections ---- */
+.value-section { margin-bottom: 40px; }
+.value-header { margin-bottom: 20px; }
+.value-badge {
+  display: inline-block;
+  font-family: Georgia, "Iowan Old Style", serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  border-radius: 10px;
+  padding: 5px 16px;
+  margin-bottom: 10px;
+}
+.value-badge-data-fanatics { background: var(--value-data-fanatics-bg); color: var(--value-data-fanatics-fg); }
+.value-badge-game-changers { background: var(--value-game-changers-bg); color: var(--value-game-changers-fg); }
+.value-badge-partner-obsession { background: var(--value-partner-obsession-bg); color: var(--value-partner-obsession-fg); }
+.value-badge-team-of-doers { background: var(--value-team-of-doers-bg); color: var(--value-team-of-doers-fg); }
+.value-official {
+  font-family: Georgia, "Iowan Old Style", serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--muted);
+  margin: 0 0 4px;
+  max-width: 74ch;
+}
+.value-plain {
+  font-size: 14.5px;
+  color: var(--text);
+  margin: 0;
+  max-width: 74ch;
+}
+
+/* ---- plain-English callout (inside case + theme cards) ---- */
+.plain-summary {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 0 0 18px;
+}
+.plain-summary .tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  color: var(--faint);
+  flex-shrink: 0;
+  padding-top: 2px;
+  white-space: nowrap;
+}
+.plain-summary p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.55;
+  max-width: 70ch;
 }
 
 /* ---- case studies ---- */

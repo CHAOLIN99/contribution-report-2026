@@ -10,6 +10,10 @@ export function CaseStudyCard({ study }: { study: CaseStudy }) {
         <span className="case-ticket">{study.ticket}</span>
       </div>
       <p className="case-lead">{study.lead}</p>
+      <div className="plain-summary">
+        <span className="tag">In plain terms</span>
+        <p>{study.plainSummary}</p>
+      </div>
       <div className="case-signal">
         <span className="tag">Signal</span>
         <span>{study.signal}</span>
