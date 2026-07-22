@@ -1,99 +1,102 @@
 import type {
   CaseStudy,
+  MatrixRow,
   MetricFlow,
   PrRow,
   RepoBreakdownRow,
+  Scored,
   StatItem,
   ThemeSection,
   ValueDef,
+  ValueId,
 } from "./types";
 import { pillLabel } from "./types";
 
 export const values: ValueDef[] = [
   {
-    id: "data-fanatics",
-    name: "Data Fanatics",
-    officialLine:
-      "The company leverages trillions of data points and machine learning to optimize and automate e-commerce growth for brands.",
-    plainLine:
-      "Decisions get made from real numbers, not guesses — measuring what's actually happening before changing anything.",
-  },
-  {
-    id: "game-changers",
-    name: "Game Changers",
-    officialLine:
-      "Employees are expected to be bold, challenge the status quo, and drive innovation.",
-    plainLine:
-      "Willing to question an existing plan — including my own already-built work — and redo it when the evidence says there's a better way.",
-  },
-  {
     id: "partner-obsession",
     name: "Partner Obsession",
     officialLine:
-      "The company prioritizes building long-term, profitable growth for the brands they partner with.",
+      "Prioritizing the success and profitability of the brands they partner with.",
     plainLine:
       "Protecting the partner brands' data, uptime, and day-to-day product experience is the point of the work, not a side effect of it.",
   },
   {
+    id: "data-fanatics",
+    name: "Data Fanatics",
+    officialLine:
+      "Using proprietary tech and analytics to guide e-commerce strategy.",
+    plainLine:
+      "Decisions get made from real numbers, not guesses — measuring what's actually happening before changing anything.",
+  },
+  {
     id: "team-of-doers",
     name: "Team of Doers",
-    officialLine:
-      "A collaborative, action-oriented philosophy built on the belief that teams build great things rather than isolated individuals.",
+    officialLine: "Working collaboratively and taking accountability.",
     plainLine:
       "Following through across other teams' systems and repos so the whole thing works end to end, not just my own piece of it.",
+  },
+  {
+    id: "game-changers",
+    name: "Game Changers",
+    officialLine: "Constantly innovating within the global digital market.",
+    plainLine:
+      "Willing to question an existing plan — including my own already-built work — and redo it when the evidence says there's a better way.",
   },
 ];
 
 export const stats: StatItem[] = [
-  { value: "73", label: "Total PRs" },
-  { value: "48", label: "Merged" },
-  { value: "15", label: "Still open" },
+  { value: "79", label: "Total PRs" },
+  { value: "60", label: "Merged" },
+  { value: "9", label: "Still open" },
   { value: "10", label: "Closed, unmerged" },
-  { value: "+42,290", label: "Lines added", variant: "add" },
-  { value: "-7,109", label: "Lines removed", variant: "del" },
+  { value: "+47,183", label: "Lines added", variant: "add" },
+  { value: "-9,414", label: "Lines removed", variant: "del" },
 ];
 
 export const repoTally = [
-  { repo: "sensors", count: 61 },
+  { repo: "sensors", count: 67 },
   { repo: "agents", count: 6 },
   { repo: "pi-toolsmith", count: 5 },
   { repo: "data-airflow", count: 1 },
 ];
 
 export const statusBreakdown = [
-  { label: pillLabel.merged, count: 48, variant: "merged" as const },
-  { label: pillLabel.open, count: 15, variant: "open" as const },
+  { label: pillLabel.merged, count: 60, variant: "merged" as const },
+  { label: pillLabel.open, count: 9, variant: "open" as const },
   { label: pillLabel.unmerged, count: 10, variant: "unmerged" as const },
 ];
 
 export const overviewBullets = [
   <>
-    <b>Data Fanatics</b> — partitioned a runaway database table down 96%
-    (PI-7372) and fixed a claim-path slowdown, both diagnosed from measured
-    evidence, not guesswork.
+    <b>Partner Obsession</b> — the widest axis: all nine work items score on it,
+    because protecting partner brands' data, uptime, and product experience is
+    the throughline. Strongest in the org/tenancy hardening and the
+    recommendation access gate.
   </>,
   <>
-    <b>Game Changers</b> — built a deploy-gate test suite, then deleted a
-    ~720-line home-grown monitor once the data showed it was redundant, and
-    modernized how our systems authenticate and shut down.
+    <b>Data Fanatics</b> — measuring before changing. Strongest in the two
+    performance fixes, where the diagnosis came from a 39M-row usage audit and
+    a read of the query planner's own cost — not a guess.
   </>,
   <>
-    <b>Partner Obsession</b> — hardened org / tenancy access control route by
-    route, protecting every partner brand's data boundary, and shipped the
-    reliability fixes partner-facing features depend on.
+    <b>Team of Doers</b> — following through across other teams' repos.
+    Strongest in the MCP integration and source-app lineage, each landed across
+    two-to-three team-owned codebases at once.
   </>,
   <>
-    <b>Team of Doers</b> — coordinated cross-repo, cross-team work wiring
-    sensors data into the agents product and tracing every automated action
-    back to its source.
+    <b>Game Changers</b> — undoing sunk-cost work when the evidence says so.
+    Strongest in the deploy gate (deleted ~1,000 lines mid-project) and
+    retiring legacy DB auth before it caused an incident.
   </>,
 ];
 
+/** Per-value roll-up derived from the matrix: weighted points and how many contributions touch each value. */
 export const valueTally = [
-  { id: "data-fanatics" as const, count: 9 },
-  { id: "game-changers" as const, count: 20 },
-  { id: "partner-obsession" as const, count: 23 },
-  { id: "team-of-doers" as const, count: 13 },
+  { id: "partner-obsession" as const, weighted: 20, touches: 9, primaries: 3 },
+  { id: "data-fanatics" as const, weighted: 14, touches: 6, primaries: 2 },
+  { id: "team-of-doers" as const, weighted: 15, touches: 9, primaries: 2 },
+  { id: "game-changers" as const, weighted: 12, touches: 7, primaries: 2 },
 ];
 
 function prRef(label: string, url: string) {
@@ -126,18 +129,8 @@ const case4Prs: PrRow[] = [
     number: 1091,
     url: PR("sensors", 1091),
     title: "terraform(sensors-api): enable org access enforcement in production",
-    status: "open",
+    status: "merged",
     added: 1,
-    removed: 0,
-    opened: "Jul 14",
-  },
-  {
-    repo: "sensors",
-    number: 1092,
-    url: PR("sensors", 1092),
-    title: "fix(sensors-api): deploy missing org_id fix to prod (PI-7920)",
-    status: "unmerged",
-    added: 22,
     removed: 0,
     opened: "Jul 14",
   },
@@ -161,6 +154,16 @@ const case4Prs: PrRow[] = [
     added: 1,
     removed: 0,
     opened: "Jul 13",
+  },
+  {
+    repo: "sensors",
+    number: 1115,
+    url: PR("sensors", 1115),
+    title: "[PI-7627] Fix staging deploy-gate wildcard org access on sensor config",
+    status: "merged",
+    added: 61,
+    removed: 4,
+    opened: "Jul 22",
   },
   {
     repo: "sensors",
@@ -216,6 +219,17 @@ const case4Prs: PrRow[] = [
   },
   {
     repo: "sensors",
+    number: 1042,
+    url: PR("sensors", 1042),
+    title:
+      "fix(sensors-api): PI-5941 GET /api/sources collection-scoped discoverability",
+    status: "merged",
+    added: 226,
+    removed: 27,
+    opened: "Jun 22",
+  },
+  {
+    repo: "sensors",
     number: 1001,
     url: PR("sensors", 1001),
     title:
@@ -224,17 +238,6 @@ const case4Prs: PrRow[] = [
     added: 487,
     removed: 43,
     opened: "Jun 3",
-  },
-  {
-    repo: "sensors",
-    number: 1042,
-    url: PR("sensors", 1042),
-    title:
-      "fix(sensors-api): PI-5941 GET /api/sources collection-scoped discoverability",
-    status: "open",
-    added: 218,
-    removed: 21,
-    opened: "Jun 22",
   },
 ];
 
@@ -253,10 +256,63 @@ const case3MetricFlow: MetricFlow = {
 export const cases: CaseStudy[] = [
   {
     id: "partitioning",
-    value: "data-fanatics",
     navLabel: "ACU blow-up",
+    matrixLabel: "sensor_version_state partitioning",
     title: "Partitioning sensor_version_state to stop an ACU blow-up",
     ticket: "PI-7372",
+    primary: "data-fanatics",
+    scores: {
+      "partner-obsession": 2,
+      "data-fanatics": 3,
+      "team-of-doers": 1,
+      "game-changers": 1,
+    },
+    valueLines: [
+      {
+        value: "data-fanatics",
+        score: 3,
+        line: (
+          <>
+            The fix came from <b>measuring real usage</b> — auditing 39M rows of
+            actual write/read behavior — rather than assumptions. That's the
+            value's own definition in practice: use real data to optimize the
+            system, don't guess at what to change.
+          </>
+        ),
+      },
+      {
+        value: "partner-obsession",
+        score: 2,
+        line: (
+          <>
+            Cutting Aurora ACU pressure and write latency protects the cloud
+            cost and uptime of the product partner brands depend on.
+          </>
+        ),
+      },
+      {
+        value: "game-changers",
+        score: 1,
+        line: (
+          <>
+            The live-data cutover carried its own drift guard that aborts the
+            swap rather than risk corrupting prod — a safety mechanism that
+            didn't exist before.
+          </>
+        ),
+      },
+      {
+        value: "team-of-doers",
+        score: 1,
+        line: (
+          <>
+            The cutover ran as one sequenced runbook — pausing the batch-eval
+            workers and the expiry Lambda, flipping the flag, resuming only once
+            it was confirmed live.
+          </>
+        ),
+      },
+    ],
     lead: (
       <>
         Cut a <b>39M-row / 47GB</b> table down to <b>1.6M / 7.7GB</b> and made
@@ -271,15 +327,6 @@ export const cases: CaseStudy[] = [
         it was never read again by anything. Shrinking the table to just the
         data that's actually used cut it by 96% and made every lookup faster,
         with no loss of anything anyone needed.
-      </>
-    ),
-    whyValue: (
-      <>
-        <b>Why Data Fanatics:</b> the fix came from measuring real usage —
-        auditing 39M rows of actual write/read behavior — rather than
-        assumptions. That's the value's own definition in practice:
-        leveraging real data points to optimize the system, not guessing at
-        what to change.
       </>
     ),
     signal: (
@@ -398,10 +445,63 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "claim-path",
-    value: "data-fanatics",
     navLabel: "Query-plan fix",
+    matrixLabel: "claim-path query-plan fix",
     title: "A query-plan regression on the claim path",
     ticket: "actions-processor",
+    primary: "data-fanatics",
+    scores: {
+      "partner-obsession": 2,
+      "data-fanatics": 3,
+      "team-of-doers": 1,
+      "game-changers": 2,
+    },
+    valueLines: [
+      {
+        value: "data-fanatics",
+        score: 3,
+        line: (
+          <>
+            The diagnosis came from the database's own <code>EXPLAIN</code>{" "}
+            data — a measured <b>~217,000 vs ~19</b> cost — not a hunch.
+            Optimizing the system starts with trusting what the data says over
+            what seems intuitively true.
+          </>
+        ),
+      },
+      {
+        value: "game-changers",
+        score: 2,
+        line: (
+          <>
+            I caught my <em>own</em> over-strict deploy gate in practice and
+            replaced it with a narrower fix plus a written policy, instead of
+            letting it quietly cause its own outages.
+          </>
+        ),
+      },
+      {
+        value: "partner-obsession",
+        score: 2,
+        line: (
+          <>
+            The fix removed a claim-path slowdown that degraded the action
+            pipeline partner workflows run through under backlog.
+          </>
+        ),
+      },
+      {
+        value: "team-of-doers",
+        score: 1,
+        line: (
+          <>
+            The code-level net got replaced with a migration policy the whole
+            team now follows — no out-of-band migrations, every DB hotfix ships
+            its migration in the same PR.
+          </>
+        ),
+      },
+    ],
     lead: (
       <>
         Found a claim query running at ~<b>217,000</b> cost where the right
@@ -417,14 +517,6 @@ export const cases: CaseStudy[] = [
         over 11,000× more work than it needed to. Rewriting that one query
         removed the slowdown — a fix that only comes from reading the actual
         evidence, not from a hunch.
-      </>
-    ),
-    whyValue: (
-      <>
-        <b>Why Data Fanatics:</b> the diagnosis came from the database's own{" "}
-        <code>EXPLAIN</code> data — a measured ~217,000 vs. ~19 cost — not a
-        hunch. Automating and optimizing the system starts with trusting what
-        the data says over what seems intuitively true.
       </>
     ),
     signal: (
@@ -520,10 +612,63 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "deploy-gate",
-    value: "game-changers",
     navLabel: "Deploy gate",
+    matrixLabel: "stage→prod deploy gate",
     title: "A deploy-gate suite — with Datadog picking what to test",
     ticket: "PI-6787",
+    primary: "game-changers",
+    scores: {
+      "partner-obsession": 2,
+      "data-fanatics": 3,
+      "team-of-doers": 1,
+      "game-changers": 3,
+    },
+    valueLines: [
+      {
+        value: "game-changers",
+        score: 3,
+        line: (
+          <>
+            The bold move wasn't building the gate — it was challenging an
+            already-approved, partially-built plan mid-project and deleting{" "}
+            <b>~1,000 lines</b> of sunk-cost work once the evidence said there
+            was a better way. Being bold enough to undo your own work is what
+            this value asks for.
+          </>
+        ),
+      },
+      {
+        value: "data-fanatics",
+        score: 3,
+        line: (
+          <>
+            I let <b>90 days of production traffic</b> — not intuition — rank
+            which 15 of ~45 endpoints were worth gating, and that data flipped
+            a real scope call.
+          </>
+        ),
+      },
+      {
+        value: "partner-obsession",
+        score: 2,
+        line: (
+          <>
+            The gate stops a broken change from reaching partner-facing prod
+            when only manual review stood in the way before.
+          </>
+        ),
+      },
+      {
+        value: "team-of-doers",
+        score: 1,
+        line: (
+          <>
+            It sits deliberately <em>behind</em> the shared Datadog/PagerDuty
+            stack rather than duplicating another team's tooling.
+          </>
+        ),
+      },
+    ],
     lead: (
       <>
         Built a stage→prod deploy gate, let 90 days of Datadog traffic rank
@@ -540,15 +685,6 @@ export const cases: CaseStudy[] = [
         duplicated a tool we already paid for — so I challenged the original
         plan, deleted the redundant build, and shipped something leaner that
         works alongside what we already had.
-      </>
-    ),
-    whyValue: (
-      <>
-        <b>Why Game Changers:</b> the bold move wasn't building the gate —
-        it was challenging an already-approved, partially-built plan
-        mid-project and deleting ~1,000 lines of sunk-cost work once the
-        evidence said there was a better way. Being bold enough to undo your
-        own work is what this value asks for.
       </>
     ),
     signal: (
@@ -647,7 +783,7 @@ export const cases: CaseStudy[] = [
         ),
       },
       {
-        date: "May 18 – Jul 6 · ongoing hardening",
+        date: "May 18 – Jul 22 · ongoing hardening",
         label: "Coverage and reliability follow-through",
         body: (
           <>
@@ -661,8 +797,10 @@ export const cases: CaseStudy[] = [
             {prRef("#1000", PR("sensors", 1000))}), a CI declaration-emit
             race fix ({prRef("#1012", PR("sensors", 1012))}), wiring the
             Datadog-ranked endpoints into the gate (
-            {prRef("#1023", PR("sensors", 1023))}), and M2M client coverage (
-            {prRef("#1049", PR("sensors", 1049))}).
+            {prRef("#1023", PR("sensors", 1023))}), M2M client coverage (
+            {prRef("#1049", PR("sensors", 1049))}), and a recent fix to the
+            staging gate's wildcard org-access handling on sensor-config
+            routes ({prRef("#1115", PR("sensors", 1115))}).
           </>
         ),
       },
@@ -678,15 +816,67 @@ export const cases: CaseStudy[] = [
   },
   {
     id: "org-access",
-    value: "partner-obsession",
     navLabel: "Org access",
+    matrixLabel: "org & tenancy access hardening",
     title: "Org & tenancy access hardening",
     ticket: "PI-6651 → PI-7873 / 7901 / 7920",
+    primary: "partner-obsession",
+    scores: {
+      "partner-obsession": 3,
+      "data-fanatics": 1,
+      "team-of-doers": 2,
+      "game-changers": 1,
+    },
+    valueLines: [
+      {
+        value: "partner-obsession",
+        score: 3,
+        line: (
+          <>
+            Tenancy boundaries are the literal mechanism that keeps one partner
+            brand's data invisible to every other brand. Closing those gaps
+            carefully — and watching the rollout instead of walking away after
+            merge — is what long-term trust with the brands requires.
+          </>
+        ),
+      },
+      {
+        value: "team-of-doers",
+        score: 2,
+        line: (
+          <>
+            I closed it route-by-route without over-rejecting the M2M callers
+            that other teams' systems — the agents service, cache warmers,
+            cross-org reads — depend on.
+          </>
+        ),
+      },
+      {
+        value: "data-fanatics",
+        score: 1,
+        line: (
+          <>
+            I watched the staged rollout on real smoke-run data and caught the
+            one regression the same day it surfaced.
+          </>
+        ),
+      },
+      {
+        value: "game-changers",
+        score: 1,
+        line: (
+          <>
+            Org scoping shipped flag-<em>independently</em>, so a user-token
+            caller was protected even while the enforcement flag was still off.
+          </>
+        ),
+      },
+    ],
     lead: (
       <>
         Closed org-scoping gaps route by route across read and write paths —
-        and caught the one regression the staged rollout produced the{" "}
-        <b>same day</b>.
+        caught the one regression the staged rollout produced the{" "}
+        <b>same day</b>, and landed prod enforcement.
       </>
     ),
     plainSummary: (
@@ -698,16 +888,8 @@ export const cases: CaseStudy[] = [
         route, because moving too fast risked locking out legitimate internal
         tools as much as leaving a gap open risked a real breach. When the
         rollout did cause one hiccup, I caught and fixed it the same day —
-        before it reached a real customer.
-      </>
-    ),
-    whyValue: (
-      <>
-        <b>Why Partner Obsession:</b> tenancy boundaries are the literal
-        mechanism that keeps one partner brand's data invisible to every
-        other brand. Closing those gaps carefully — and watching the rollout
-        instead of walking away after merge — is what long-term trust with
-        the brands we partner with requires.
+        before it reached a real customer — and production enforcement is now
+        live.
       </>
     ),
     signal: (
@@ -768,24 +950,22 @@ export const cases: CaseStudy[] = [
         ),
       },
       {
-        date: "Jul 14 · prod flip, in flight",
+        date: "Jul 22 · prod enforcement live",
         label: (
           <>
-            Prod enforcement PR open, held for soak time{" "}
+            Prod enforcement flag merged after the soak cleared{" "}
             {prRef("#1091", PR("sensors", 1091))}
           </>
         ),
         body: (
           <>
-            Staging has been green on every smoke run since the #1089 fix. A
-            single PR bundles the prod tfvars flip with a deploy of{" "}
-            <code>main</code> (already carrying the fix) — a separate
-            backport-only PR ({prRef("#1092", PR("sensors", 1092))}) was
-            opened, then closed in favor of this one. Not merging yet: the
-            post-fix soak is only ~16h old against a 48h bar, and an unrelated{" "}
-            <code>sensor-variables-lifecycle</code> CI job has been failing
-            both before and after the fix and needs to be confirmed unrelated
-            first.
+            Staging stayed green on every smoke run after the #1089 fix, the
+            48h soak cleared, and the unrelated{" "}
+            <code>sensor-variables-lifecycle</code> CI failure was confirmed
+            independent — so the prod tfvars flip merged on Jul 22. A separate
+            backport-only PR ({prRef("#1092", PR("sensors", 1092))}) was closed
+            in favor of it, and a follow-up ({prRef("#1115", PR("sensors", 1115))})
+            tidied the staging gate's wildcard handling on sensor-config routes.
           </>
         ),
       },
@@ -795,9 +975,9 @@ export const cases: CaseStudy[] = [
         <b>Result:</b> org-scoping closed across read and write paths with
         case-insensitive comparisons and documented M2M contracts — and
         because I watched the staged rollout rather than fire-and-forgetting
-        it, the one regression got caught, root-caused, and fixed same-day
-        instead of reaching prod. The staging flag is live and stable; the
-        prod flip is staged behind an open PR pending a 48h soak.
+        it, the one regression got caught, root-caused, and fixed same-day.
+        Both the staging and <em>production</em> enforcement flags are now
+        live and stable.
       </>
     ),
     prTable: case4Prs,
@@ -806,8 +986,50 @@ export const cases: CaseStudy[] = [
 
 export const themes: ThemeSection[] = [
   {
-    value: "team-of-doers",
+    id: "mcp-integration",
+    matrixLabel: "MCP / agent integration",
     title: "MCP / agent integration (sensors-api ↔ agents)",
+    primary: "team-of-doers",
+    scores: {
+      "partner-obsession": 2,
+      "data-fanatics": 0,
+      "team-of-doers": 3,
+      "game-changers": 1,
+    },
+    valueLines: [
+      {
+        value: "team-of-doers",
+        score: 3,
+        line: (
+          <>
+            Two separately-owned systems — agents and sensors — were
+            coordinated to act as one. No single team could have shipped this
+            end to end on its own.
+          </>
+        ),
+      },
+      {
+        value: "partner-obsession",
+        score: 2,
+        line: (
+          <>
+            It wires sensors data into the agent product partners use, and
+            hardens MCP payloads that carry unvalidated Sensors API content
+            back to the LLM.
+          </>
+        ),
+      },
+      {
+        value: "game-changers",
+        score: 1,
+        line: (
+          <>
+            The rollout was toggle-gated, so the new MCP surface could ship
+            dark and be enabled deliberately.
+          </>
+        ),
+      },
+    ],
     description: (
       <>
         Wiring sensors-api into the MCP surface used by agents: forwarding
@@ -826,13 +1048,6 @@ export const themes: ThemeSection[] = [
         sensors data without either team having to work around the other.
       </>
     ),
-    whyValue: (
-      <>
-        <b>Why Team of Doers:</b> this only works because two separate teams'
-        systems — agents and sensors — were coordinated to act as one. No
-        single team could have shipped this end to end on its own.
-      </>
-    ),
     prTable: [
       {
         repo: "agents",
@@ -840,7 +1055,7 @@ export const themes: ThemeSection[] = [
         url: PR("agents", 2528),
         title: "[PI-7507] Workflow-builder assignability for sensors-api MCP",
         status: "open",
-        added: 140,
+        added: 142,
         removed: 19,
         opened: "Jul 16",
       },
@@ -859,7 +1074,7 @@ export const themes: ThemeSection[] = [
         number: 1048,
         url: PR("pi-toolsmith", 1048),
         title: "[PI-7507] Bump sensors-api shim to 1.0.1 for deploy",
-        status: "open",
+        status: "merged",
         added: 3,
         removed: 3,
         opened: "Jul 16",
@@ -927,8 +1142,49 @@ export const themes: ThemeSection[] = [
     ],
   },
   {
-    value: "team-of-doers",
+    id: "source-app-lineage",
+    matrixLabel: "source-app lineage & typing",
     title: "Source-app lineage & resource-context typing",
+    primary: "team-of-doers",
+    scores: {
+      "partner-obsession": 1,
+      "data-fanatics": 2,
+      "team-of-doers": 3,
+      "game-changers": 0,
+    },
+    valueLines: [
+      {
+        value: "team-of-doers",
+        score: 3,
+        line: (
+          <>
+            One change landed across three team-owned codebases — sensors,
+            agents, and data-airflow — together, rather than three separate
+            uncoordinated changes.
+          </>
+        ),
+      },
+      {
+        value: "data-fanatics",
+        score: 2,
+        line: (
+          <>
+            It promotes JSONB payload fields to typed columns so eval data is
+            directly queryable and every automated action traces to its source.
+          </>
+        ),
+      },
+      {
+        value: "partner-obsession",
+        score: 1,
+        line: (
+          <>
+            It closes a gap where an automated action's origin could otherwise
+            be lost between systems.
+          </>
+        ),
+      },
+    ],
     description: (
       <>
         Tier-1 lineage enforcement at the agents invocation boundary, plus
@@ -942,14 +1198,6 @@ export const themes: ThemeSection[] = [
         different teams, so every automated action can be traced back to
         which system originally requested it — closing a gap where that
         traceability could otherwise get lost between teams.
-      </>
-    ),
-    whyValue: (
-      <>
-        <b>Why Team of Doers:</b> landing one change across three
-        team-owned codebases together, rather than three separate
-        uncoordinated changes, is exactly the "teams build great things"
-        philosophy this value describes.
       </>
     ),
     prTable: [
@@ -979,8 +1227,8 @@ export const themes: ThemeSection[] = [
         url: PR("sensors", 1016),
         title: "Filter promoted resource_context columns with JSON fallback (PI-1725)",
         status: "open",
-        added: 68,
-        removed: 23,
+        added: 108,
+        removed: 58,
         opened: "Jun 10",
       },
       {
@@ -996,8 +1244,39 @@ export const themes: ThemeSection[] = [
     ],
   },
   {
-    value: "partner-obsession",
+    id: "recommendation-gate",
+    matrixLabel: "recommendation access gate",
     title: "Pattern-user gating for recommendations",
+    primary: "partner-obsession",
+    scores: {
+      "partner-obsession": 3,
+      "data-fanatics": 0,
+      "team-of-doers": 2,
+      "game-changers": 0,
+    },
+    valueLines: [
+      {
+        value: "partner-obsession",
+        score: 3,
+        line: (
+          <>
+            This gate exists solely to keep a capability partner brands pay for
+            from leaking to users it wasn't built for — long-term value for
+            partners over short-term convenience.
+          </>
+        ),
+      },
+      {
+        value: "team-of-doers",
+        score: 2,
+        line: (
+          <>
+            It's a two-part gate split across the sensors-api route layer and
+            the agents invocation layer — one guarantee held across two systems.
+          </>
+        ),
+      },
+    ],
     description: (
       <>
         A two-part gate restricting recommendation surfaces to Pattern
@@ -1011,14 +1290,6 @@ export const themes: ThemeSection[] = [
         with. I built the access gate — across two separate systems — that
         makes sure only the right users can see them, protecting that
         feature's value for the partners it's meant for.
-      </>
-    ),
-    whyValue: (
-      <>
-        <b>Why Partner Obsession:</b> this gate exists solely to protect a
-        capability that partner brands pay for from leaking to users it
-        wasn't built for — long-term value for partners over short-term
-        convenience.
       </>
     ),
     prTable: [
@@ -1037,8 +1308,8 @@ export const themes: ThemeSection[] = [
         number: 974,
         url: PR("sensors", 974),
         title: "feat(sensors-api): Pattern-user gate on /recommendations* routes (PI-6784)",
-        status: "open",
-        added: 789,
+        status: "merged",
+        added: 788,
         removed: 5,
         opened: "May 20",
       },
@@ -1055,13 +1326,68 @@ export const themes: ThemeSection[] = [
     ],
   },
   {
-    value: "partner-obsession",
-    title: "Feature & API work",
+    id: "feature-api",
+    matrixLabel: "feature, API & sensor chaining",
+    title: "Feature, API & sensor-chaining work",
+    primary: "partner-obsession",
+    scores: {
+      "partner-obsession": 3,
+      "data-fanatics": 2,
+      "team-of-doers": 1,
+      "game-changers": 1,
+    },
+    valueLines: [
+      {
+        value: "partner-obsession",
+        score: 3,
+        line: (
+          <>
+            This is the day-to-day product partner brands actually touch —
+            transactional handlers so a failure can't leave changes half-done,
+            audit history, and an API that degrades gracefully under load
+            instead of failing outright.
+          </>
+        ),
+      },
+      {
+        value: "data-fanatics",
+        score: 2,
+        line: (
+          <>
+            The new chain-create validation and <code>input_sensors</code>{" "}
+            derivation guard the integrity of the sensor-chaining data model
+            partners build on.
+          </>
+        ),
+      },
+      {
+        value: "game-changers",
+        score: 1,
+        line: (
+          <>
+            I bounded a runaway Trino <code>COUNT(*)</code> so the endpoint
+            degrades to <code>total: null</code> instead of 503ing the whole
+            response.
+          </>
+        ),
+      },
+      {
+        value: "team-of-doers",
+        score: 1,
+        line: (
+          <>
+            The <code>input_sensors</code> contract was coordinated with the
+            workflow and agent consumers that read it.
+          </>
+        ),
+      },
+    ],
     description: (
       <>
         Product-facing sensors-api features: transactional handlers, audit
-        history, dependency-derived sources, cascading PATCH updates, and
-        DRAFT-state promotion. One worth calling out is{" "}
+        history, dependency-derived sources, cascading PATCH updates, DRAFT-state
+        promotion, and the sensor-chaining <code>input_sensors</code> contract
+        (PI-8003 → 8006). One worth calling out is{" "}
         {prRef("#1026", PR("sensors", 1026))}: prod test failures showed{" "}
         <code>GET/POST /api/agents/sensor_analysis</code> returning a 503 at
         ~30s. The cause was an API Gateway 30s integration timeout racing an
@@ -1071,26 +1397,19 @@ export const themes: ThemeSection[] = [
         count can't finish rather than 503ing the whole response, and cached
         the windowed count for 300s to keep the deploy-gate path warm.
         Manually exercising the DRAFT-promotion fix from {prRef("#1064", PR("sensors", 1064))}{" "}
-        turned up a design gap ({prRef("#1094", PR("sensors", 1094))}): promoting
-        a draft archives the previously-live version, which the existing
-        dependency guard then blocks whenever that version is still
-        referenced by a workflow or a chained sensor — currently in review.
+        turned up a design gap since fixed in{" "}
+        {prRef("#1094", PR("sensors", 1094))}: promoting a draft archives the
+        previously-live version, which the dependency guard then blocked
+        whenever that version was still referenced — now resolved and merged.
       </>
     ),
     plainSummary: (
       <>
         The day-to-day features and reliability fixes that partner brands
         actually touch: safer database updates so a failure can't leave
-        changes half-done, an audit trail so changes are traceable, and a fix
-        for an API that was timing out and erroring under load — it now
-        degrades gracefully instead of failing outright.
-      </>
-    ),
-    whyValue: (
-      <>
-        <b>Why Partner Obsession:</b> none of this is glamorous — it's the
-        reliability and correctness work that keeps the product partner
-        brands use every day from breaking underneath them.
+        changes half-done, an audit trail so changes are traceable, a fix
+        for an API that was timing out under load, and the new "sensor
+        chaining" data model that lets one sensor feed another.
       </>
     ),
     prTable: [
@@ -1109,9 +1428,9 @@ export const themes: ThemeSection[] = [
         number: 1025,
         url: PR("sensors", 1025),
         title: "feat(sensors-api): PI-7627 resolution preview — winning_scope, 404, org-scoped reads",
-        status: "open",
-        added: 311,
-        removed: 35,
+        status: "merged",
+        added: 350,
+        removed: 16,
         opened: "Jun 17",
       },
       {
@@ -1120,8 +1439,8 @@ export const themes: ThemeSection[] = [
         url: PR("sensors", 1026),
         title: "fix(sensors-api): prevent sensor_analysis 503s from slow Trino COUNT",
         status: "open",
-        added: 1067,
-        removed: 494,
+        added: 1547,
+        removed: 2220,
         opened: "Jun 17",
       },
       {
@@ -1133,16 +1452,6 @@ export const themes: ThemeSection[] = [
         added: 4723,
         removed: 535,
         opened: "Jun 17",
-      },
-      {
-        repo: "sensors",
-        number: 1039,
-        url: PR("sensors", 1039),
-        title: "PI-7629: Derive sensor_versions.sources from sensor_version_dependencies",
-        status: "merged",
-        added: 1535,
-        removed: 206,
-        opened: "Jun 19",
       },
       {
         repo: "sensors",
@@ -1169,10 +1478,50 @@ export const themes: ThemeSection[] = [
         number: 1094,
         url: PR("sensors", 1094),
         title: "[PI-7863] Fix draft promotion visibility cascade",
-        status: "open",
+        status: "merged",
         added: 449,
         removed: 35,
         opened: "Jul 15",
+      },
+      {
+        repo: "sensors",
+        number: 1102,
+        url: PR("sensors", 1102),
+        title: "[PI-8003] Add evaluation_spec.input_sensors API contract",
+        status: "merged",
+        added: 1349,
+        removed: 136,
+        opened: "Jul 17",
+      },
+      {
+        repo: "sensors",
+        number: 1114,
+        url: PR("sensors", 1114),
+        title: "[PI-8005] Chain-create validation: DB-resolved input_sensors guards",
+        status: "merged",
+        added: 2038,
+        removed: 68,
+        opened: "Jul 21",
+      },
+      {
+        repo: "sensors",
+        number: 1116,
+        url: PR("sensors", 1116),
+        title: "[PI-8004] Derive SENSOR deps and sources from input_sensors",
+        status: "merged",
+        added: 475,
+        removed: 279,
+        opened: "Jul 22",
+      },
+      {
+        repo: "sensors",
+        number: 1119,
+        url: PR("sensors", 1119),
+        title: "[PI-8006] Suppress action queueing for non-current pinned sensor versions",
+        status: "open",
+        added: 284,
+        removed: 21,
+        opened: "Jul 22",
       },
       {
         repo: "sensors",
@@ -1180,15 +1529,56 @@ export const themes: ThemeSection[] = [
         url: PR("sensors", 1003),
         title: "feat(sensors): collapse to single payload column (PI-7440 Phase A)",
         status: "open",
-        added: 103,
-        removed: 204,
+        added: 106,
+        removed: 208,
         opened: "Jun 5",
       },
     ],
   },
   {
-    value: "game-changers",
+    id: "infra-runtime",
+    matrixLabel: "infra, runtime & decommissioning",
     title: "Infra, runtime & decommissioning",
+    primary: "game-changers",
+    scores: {
+      "partner-obsession": 2,
+      "data-fanatics": 0,
+      "team-of-doers": 1,
+      "game-changers": 3,
+    },
+    valueLines: [
+      {
+        value: "game-changers",
+        score: 3,
+        line: (
+          <>
+            Retiring legacy password auth and dead code before they cause an
+            incident is choosing to challenge "it's always worked this way"
+            ahead of being forced to.
+          </>
+        ),
+      },
+      {
+        value: "partner-obsession",
+        score: 2,
+        line: (
+          <>
+            Graceful shutdown and scale-in protection keep in-flight partner
+            work from being dropped when workers deploy or scale down.
+          </>
+        ),
+      },
+      {
+        value: "team-of-doers",
+        score: 1,
+        line: (
+          <>
+            The sensors-ui CORS decommission was coordinated with its
+            downstream consumers rather than pulled unilaterally.
+          </>
+        ),
+      },
+    ],
     description: (
       <>
         ECS/container lifecycle hardening (graceful shutdown, scale-in
@@ -1202,13 +1592,6 @@ export const themes: ThemeSection[] = [
         long-lived passwords toward short-lived, automatically-rotated
         credentials — hardened how workers shut down so in-flight work isn't
         dropped, and retired old rules and code paths nobody used anymore.
-      </>
-    ),
-    whyValue: (
-      <>
-        <b>Why Game Changers:</b> retiring legacy auth and dead code before
-        they cause an incident is choosing to challenge "it's always worked
-        this way" ahead of being forced to.
       </>
     ),
     prTable: [
@@ -1258,7 +1641,7 @@ export const themes: ThemeSection[] = [
         url: PR("sensors", 1019),
         title: "feat(infra): RDS Proxy IAM auth resources (PI-1430)",
         status: "open",
-        added: 153,
+        added: 183,
         removed: 2,
         opened: "Jun 11",
       },
@@ -1286,9 +1669,28 @@ export const themes: ThemeSection[] = [
   },
 ];
 
+/** The evaluation matrix, in the same order the detail cards appear. */
+export const matrixRows: MatrixRow[] = [...cases, ...themes].map(
+  (c: Scored & { id: string; matrixLabel: string; ticket?: string }) => ({
+    id: c.id,
+    label: c.matrixLabel,
+    ticket: "ticket" in c ? (c as CaseStudy).ticket : undefined,
+    scores: c.scores,
+    primary: c.primary,
+  })
+);
+
+/** Column order for the matrix and axis summaries — follows the four values as given. */
+export const valueOrder: ValueId[] = [
+  "partner-obsession",
+  "data-fanatics",
+  "team-of-doers",
+  "game-changers",
+];
+
 export const repoBreakdown: RepoBreakdownRow[] = [
-  { repo: "sensors", total: 61, merged: 42, open: 13, closed: 6, added: 37594, removed: 5941 },
-  { repo: "agents", total: 6, merged: 2, open: 1, closed: 3, added: 2240, removed: 353 },
-  { repo: "pi-toolsmith", total: 5, merged: 4, open: 1, closed: 0, added: 1856, removed: 631 },
+  { repo: "sensors", total: 67, merged: 53, open: 8, closed: 6, added: 42485, removed: 8246 },
+  { repo: "agents", total: 6, merged: 2, open: 1, closed: 3, added: 2242, removed: 353 },
+  { repo: "pi-toolsmith", total: 5, merged: 5, open: 0, closed: 0, added: 1856, removed: 631 },
   { repo: "data-airflow", total: 1, merged: 0, open: 0, closed: 1, added: 600, removed: 184 },
 ];

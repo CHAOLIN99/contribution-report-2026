@@ -7,7 +7,7 @@ interface OverviewProps {
   repoTally: { repo: string; count: number }[];
   statusBreakdown: { label: string; count: number; variant: PillStatus }[];
   values: ValueDef[];
-  valueTally: { id: ValueId; count: number }[];
+  valueTally: { id: ValueId; weighted: number; touches: number; primaries: number }[];
 }
 
 export function Overview({ bullets, repoTally, statusBreakdown, values, valueTally }: OverviewProps) {
@@ -15,16 +15,22 @@ export function Overview({ bullets, repoTally, statusBreakdown, values, valueTal
   return (
     <div className="overview">
       <h2>The short version</h2>
-      <p>Four company values account for most of this window's work:</p>
+      <p>
+        Instead of filing each piece of work under one company value, I scored
+        every contribution against <b>all four values at once</b> — a matrix, not
+        a set of buckets. Most work turns out to serve three or four values, so
+        the interesting question is <em>how strongly</em> each one shows up:
+      </p>
       <ul>
         {bullets.map((bullet, i) => (
           <li key={i}>{bullet}</li>
         ))}
       </ul>
       <p className="closer">
-        Each value is written up below with a plain-English summary first, then the
-        technical trail — signal → diagnosis → what I shipped → result — with every PR
-        linked inline where it mattered.
+        The <a href="#matrix">matrix below</a> is the spine of the report: one row
+        per contribution, scored 0–3 on each value. Under it, each contribution is
+        written up with a plain-English summary, its four-value read-out, then the
+        technical trail — and finally the same scores read back <a href="#by-value">by value</a>.
       </p>
 
       <div className="overview-value-tally">
@@ -32,15 +38,15 @@ export function Overview({ bullets, repoTally, statusBreakdown, values, valueTal
           const def = values.find((d) => d.id === v.id)!;
           return (
             <a className={`value-chip value-chip-${v.id}`} href={`#${v.id}`} key={v.id}>
-              {def.name} <b>{v.count}</b>
+              {def.name} <b>{v.weighted}</b> pts
             </a>
           );
         })}
       </div>
       <p className="value-tally-note">
-        PRs individually called out in a case study or table below, by the value they
-        best demonstrate; total counts above include additional smaller PRs folded into
-        each repo's aggregate but not written up one by one.
+        Points are the sum of that value's 0–3 scores across all nine
+        contributions; every value is earned by multiple pieces of work, which is
+        the point of scoring them as a matrix rather than assigning one owner each.
       </p>
 
       <div className="mini-dash">

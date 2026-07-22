@@ -85,7 +85,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-.case, #overview, .value-section, #repo-breakdown { scroll-margin-top: 20px; }
+.case, .lens, #overview, #matrix, #work, #by-value, #repo-breakdown { scroll-margin-top: 20px; }
 body {
   margin: 0;
   background: var(--bg);
@@ -748,6 +748,177 @@ footer.notes p { margin: 0 0 6px; }
 }
 .diff-bar-add { height: 100%; background: var(--add); transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 .diff-bar-del { height: 100%; background: var(--del); transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* ---- evaluation matrix ---- */
+.matrix-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  border-radius: 12px;
+  padding: 18px 20px 16px;
+  margin-bottom: 8px;
+  overflow-x: auto;
+}
+table.matrix { border-collapse: collapse; width: 100%; min-width: 640px; }
+.matrix th, .matrix td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  vertical-align: middle;
+}
+.matrix tbody tr:hover { background: var(--surface-2); }
+.matrix .mx-row-head {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+  font-weight: 600;
+}
+.matrix .mx-col-head { vertical-align: bottom; padding-bottom: 12px; }
+.mx-col-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.matrix .mx-row-label { text-align: left; font-weight: 500; white-space: nowrap; }
+.mx-row-label a { color: var(--text); text-decoration: none; font-size: 14px; }
+.mx-row-label a:hover { color: var(--accent); text-decoration: underline; }
+.mx-row-ticket {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  color: var(--faint);
+  margin-top: 2px;
+  font-weight: 400;
+}
+.mx-cell.mx-primary { background: var(--surface-2); }
+.matrix tbody tr:hover .mx-cell.mx-primary { background: var(--surface); }
+.matrix tfoot th, .matrix tfoot td { border-bottom: none; border-top: 2px solid var(--border); }
+.mx-total-label {
+  color: var(--faint);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+.mx-total-n {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+.mx-total-sub { font-size: 10.5px; color: var(--faint); }
+
+/* score dots — filled count = score, colored by value */
+.mx-dots { display: inline-flex; gap: 3px; align-items: center; }
+.mx-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--faint);
+  box-sizing: border-box;
+}
+.mx-dots-none { color: var(--faint); font-weight: 700; font-size: 15px; }
+.mx-dots-partner-obsession .mx-dot.on { background: var(--value-partner-obsession-fg); border-color: var(--value-partner-obsession-fg); }
+.mx-dots-data-fanatics .mx-dot.on { background: var(--value-data-fanatics-fg); border-color: var(--value-data-fanatics-fg); }
+.mx-dots-team-of-doers .mx-dot.on { background: var(--value-team-of-doers-fg); border-color: var(--value-team-of-doers-fg); }
+.mx-dots-game-changers .mx-dot.on { background: var(--value-game-changers-fg); border-color: var(--value-game-changers-fg); }
+.matrix-legend { font-size: 12px; color: var(--muted); margin: 14px 2px 0; max-width: 82ch; line-height: 1.7; }
+.mx-key { display: inline-flex; gap: 2px; vertical-align: middle; margin: 0 1px; }
+.mx-key .mx-dot.on { background: var(--accent); border-color: var(--accent); }
+.mx-none-key { color: var(--faint); font-weight: 700; }
+
+/* ---- per-card value scorecard ---- */
+.scorecard { margin: 0 0 18px; }
+.scorecard-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+@media (max-width: 620px) { .scorecard-strip { grid-template-columns: repeat(2, 1fr); } }
+.sc-axis {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  align-items: flex-start;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 11px;
+}
+.sc-axis-off { opacity: 0.5; }
+.sc-axis-primary { box-shadow: inset 0 0 0 1.5px var(--accent); }
+.sc-axis-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+.sc-axis .mx-dot { width: 8px; height: 8px; }
+.scorecard-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.scorecard-lines li.why-value { margin: 0; max-width: none; }
+
+/* ---- by-value lens (matrix transposed) ---- */
+.lens {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  box-shadow: var(--shadow);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 16px;
+}
+.lens.value-section-partner-obsession { border-left-color: var(--value-partner-obsession-fg); }
+.lens.value-section-data-fanatics { border-left-color: var(--value-data-fanatics-fg); }
+.lens.value-section-team-of-doers { border-left-color: var(--value-team-of-doers-fg); }
+.lens.value-section-game-changers { border-left-color: var(--value-game-changers-fg); }
+.lens-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.lens-head .value-badge { font-size: 18px; margin-bottom: 0; }
+.lens-score { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.lens-score b { color: var(--text); }
+.lens .value-official { margin-bottom: 4px; }
+.lens .value-plain { margin-bottom: 0; }
+.lens-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.lens-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 5px 12px;
+  text-decoration: none;
+  transition: filter 0.15s;
+}
+.lens-chip:hover { filter: brightness(0.96); }
+.lens-chip-primary { box-shadow: inset 0 0 0 1.5px currentColor; }
+
+/* ---- case accent by leading value ---- */
+.case-accent-partner-obsession { border-top: 3px solid var(--value-partner-obsession-fg); }
+.case-accent-data-fanatics { border-top: 3px solid var(--value-data-fanatics-fg); }
+.case-accent-team-of-doers { border-top: 3px solid var(--value-team-of-doers-fg); }
+.case-accent-game-changers { border-top: 3px solid var(--value-game-changers-fg); }
 
 /* ---- collapsible investigation trail ---- */
 .flow-details { margin: 4px 0 18px; }

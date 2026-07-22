@@ -1,10 +1,19 @@
-import type { CaseStudy } from "../types";
+import type { CaseStudy, ValueDef, ValueId } from "../types";
 import { PrTable } from "./PrTable";
 import { CompareBar } from "./charts";
+import { ValueScorecard } from "./ValueScorecard";
 
-export function CaseStudyCard({ study }: { study: CaseStudy }) {
+export function CaseStudyCard({
+  study,
+  values,
+  order,
+}: {
+  study: CaseStudy;
+  values: ValueDef[];
+  order: ValueId[];
+}) {
   return (
-    <div className="case" id={study.id}>
+    <div className={`case case-accent-${study.primary}`} id={study.id}>
       <div className="case-head">
         <h3>{study.title}</h3>
         <span className="case-ticket">{study.ticket}</span>
@@ -14,7 +23,9 @@ export function CaseStudyCard({ study }: { study: CaseStudy }) {
         <span className="tag">In plain terms</span>
         <p>{study.plainSummary}</p>
       </div>
-      <div className={`why-value why-value-${study.value}`}>{study.whyValue}</div>
+
+      <ValueScorecard item={study} values={values} order={order} />
+
       <div className="case-signal">
         <span className="tag">Signal</span>
         <span>{study.signal}</span>

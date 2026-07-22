@@ -55,17 +55,46 @@ export interface ValueDef {
   plainLine: string;
 }
 
-export interface CaseStudy {
-  id: string;
+/** 0 = not applicable, 1 = present, 2 = strong, 3 = primary/defining. */
+export type ValueScore = 0 | 1 | 2 | 3;
+
+export const scoreLabel: Record<ValueScore, string> = {
+  0: "not applicable",
+  1: "present",
+  2: "strong",
+  3: "primary",
+};
+
+/** Every contribution is scored on all four values — the matrix, not a single bucket. */
+export type ValueScores = Record<ValueId, ValueScore>;
+
+/** The earned "why this value" line for one axis a contribution scores on (score > 0). */
+export interface ValueRationale {
   value: ValueId;
+  score: ValueScore;
+  line: ReactNode;
+}
+
+/** Fields every contribution (deep case study or theme cluster) shares for the matrix. */
+export interface Scored {
+  /** How this contribution rates on each of the four values. */
+  scores: ValueScores;
+  /** One line per value it earns, ordered strongest-first; drives the per-card readout. */
+  valueLines: ValueRationale[];
+  /** Highest-scoring value — sets the accent color; ties resolved editorially. */
+  primary: ValueId;
+}
+
+export interface CaseStudy extends Scored {
+  id: string;
   navLabel: string;
+  /** Short label used in the matrix row. */
+  matrixLabel: string;
   title: string;
   ticket: string;
   lead: ReactNode;
   /** Plain-English "what this means" callout, written for a non-technical reader. */
   plainSummary: ReactNode;
-  /** Explicit "why this is [value]" line, tying the work back to the value's own definition. */
-  whyValue: ReactNode;
   signal: ReactNode;
   narrative: ReactNode[];
   flow: FlowStep[];
@@ -74,15 +103,24 @@ export interface CaseStudy {
   prTable?: PrRow[];
 }
 
-export interface ThemeSection {
-  value: ValueId;
+export interface ThemeSection extends Scored {
+  id: string;
+  /** Short label used in the matrix row. */
+  matrixLabel: string;
   title: string;
   description: ReactNode;
   /** Plain-English "what this means" callout, written for a non-technical reader. */
   plainSummary: ReactNode;
-  /** Explicit "why this is [value]" line, tying the work back to the value's own definition. */
-  whyValue: ReactNode;
   prTable: PrRow[];
+}
+
+/** One row of the evaluation matrix — any scored contribution, case or theme. */
+export interface MatrixRow {
+  id: string;
+  label: string;
+  ticket?: string;
+  scores: ValueScores;
+  primary: ValueId;
 }
 
 export interface RepoBreakdownRow {
