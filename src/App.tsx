@@ -34,16 +34,17 @@ export function App() {
       <header className="masthead">
         <div className="brand-rule" />
         <p className="eyebrow">Contribution report · Pattern</p>
-        <h1>My contributions — May 1 to Jul 22, 2026</h1>
+        <h1>My contributions — May 1 to Aug 28, 2026</h1>
         <p className="subhead">
-          I opened 79 pull requests across <code>agents</code>, <code>pi-toolsmith</code>,{" "}
-          <code>sensors</code>, and <code>data-airflow</code>. Rather than file each under
-          one company value, this report scores every contribution against all four of
-          Pattern's values as a matrix — Partner Obsession, Data Fanatics, Team of Doers,
-          and Game Changers — with a plain-English summary of what each piece of work means
-          before the technical detail.
+          I opened 151 pull requests across <code>sensors</code>, <code>pattern-exp</code>,{" "}
+          <code>agents</code>, <code>pi-toolsmith</code>,{" "}
+          <code>sensors-workflow-builder</code>, and <code>data-airflow</code>. Rather than
+          file each under one company value, this report scores every contribution against
+          all four of Pattern's values as a matrix — Partner Obsession, Data Fanatics, Team
+          of Doers, and Game Changers — with a plain-English summary of what each piece of
+          work means before the technical detail.
         </p>
-        <span className="read-time">≈ 4 min read · expand any case for the full trail</span>
+        <span className="read-time">≈ 6 min read · expand any case for the full trail</span>
         <JumpNav items={navItems} />
       </header>
 
@@ -72,7 +73,7 @@ export function App() {
         The contributions
       </h2>
       <p className="section-sub">
-        Ordered by depth of write-up: the four deep-dive investigations first, then the
+        Ordered by depth of write-up: the seven deep-dive investigations first, then the
         cross-cutting clusters. Each carries its own four-value read-out.
       </p>
       {cases.map((study) => (
@@ -109,7 +110,9 @@ export function App() {
             "created:&gt;=2026-05-01"
           </code>{" "}
           against each repo, then cross-referenced individual PR bodies, review threads, and
-          linked run logs for the four deep-dive sections, refreshed on 2026-07-22. "Opened"
+          linked run logs for the deep-dive sections, refreshed on 2026-08-28. Counts and
+          diff totals are re-derived from GitHub at that date, so a PR listed here as merged
+          may have been open in an earlier revision of this report. "Opened"
           dates reflect PR creation, not merge; "Closed" means closed without merging
           (superseded, split into another PR, or abandoned). The diagnose → plan → solve
           narratives are reconstructed from what each PR's own description states about root
