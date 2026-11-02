@@ -8,5 +8,5 @@ export interface Contribution {
   headline: string;
   number: string;
   did: string[];
-  how: string[];
+  how?: string[];
 }

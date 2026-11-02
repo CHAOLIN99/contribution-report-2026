@@ -10,12 +10,16 @@ export function ContributionCard({ item }: { item: Contribution }) {
           <li key={line}>{line}</li>
         ))}
       </ul>
-      <h3 className="how-title">How it works (technical)</h3>
-      {item.how.map((paragraph) => (
-        <p className="narrative" key={paragraph}>
-          {paragraph}
-        </p>
-      ))}
+      {item.how && item.how.length > 0 ? (
+        <>
+          <h3 className="how-title">How it works (technical)</h3>
+          {item.how.map((paragraph) => (
+            <p className="narrative" key={paragraph}>
+              {paragraph}
+            </p>
+          ))}
+        </>
+      ) : null}
     </article>
   );
 }

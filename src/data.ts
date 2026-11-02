@@ -1,10 +1,10 @@
 import type { Contribution, StatItem } from "./types";
 
 export const roleLine =
-  "Software Engineering Intern, Sensors (Pattern's automation platform) · May 2026 to now";
+  "Software Engineering Intern, Sensors · Pattern · May 2026 to now";
 
 export const summary =
-  "I work on the system that runs automated price, listing and ad actions for Pattern's partner brands. These are the six changes that mattered most.";
+  "I work on Sensors, the platform that runs automated price, listing and ad actions for Pattern's partner brands. These are the six changes that mattered most, and how I got there.";
 
 export const stats: StatItem[] = [
   { value: "211", label: "changes shipped" },
@@ -18,28 +18,22 @@ export const contributions: Contribution[] = [
     headline: "Brands get the price and listing changes they pay for",
     number: "~220 rejected actions a day → 0, every day since Oct 9",
     did: [
-      "Automated price and listing actions were rejected 41 to 813 times a day because a person's name didn't match in capitalization. I found the cause and fixed it on Oct 8.",
-      "I also found a batch step that ran 55 to 113 times per run instead of once. I cleared the backlog it caused, and the fix that stops it for good is in review.",
-    ],
-    how: [
-      "The downstream API compared an enum value case-sensitively. The automation sent lowercase, so a person's name failed the match. I compared the values on each side, then fixed the casing at the source on Oct 8. Rejections ranged from 41 to 813 a day. They have been 0 every day since Oct 9.",
-      "A batch action was enqueued once per brand, 55 to 113 copies, and each copy ran the whole batch. I cancelled that backlog. The fix that enqueues one row per node is in review.",
+      "Price-suppression and brand-management actions were getting rejected by the task service 41 to 813 times a day. I pulled the rejected requests from prod and compared them with what the task service accepts: we sent a person's name field in lowercase, and its enum only matched the capitalized value.",
+      "The right fix was in the task service, another team's service, not a workaround in our code. I got push access and fixed the enum there on Oct 8. Rejections have been 0 every day since.",
+      "In the same prod data I found ungated batch pricing actions fanning out one row per org, 55 to 113 copies per run, each sending the full batch. It came from my own Aug 21 change, so I owned the cleanup: I wrote the cancel query for the 1,738 extra rows blocking other actions, and a teammate with prod write access ran it. The one-row-per-node fix is in review.",
+      "For the duplicate-dispatch guard, I counted violations in prod before merging. A plain unique index would have failed the deploy over 2,267 existing duplicate keys, so I scoped it to new rows.",
     ],
   },
   {
     id: "org-access",
     headline: "Partner brands can only see their own data",
     number:
-      "every gap from the data access audit closed, enforced in production since July 22",
+      "Every org-scoping gap from the audit closed, enforced in prod since Jul 22",
     did: [
-      "I closed each gap the audit found and turned the checks on in production.",
-      "My rollout caused one problem. I caught it and fixed it the same day.",
-      "In October I deleted old unused routes that skipped these checks, instead of patching them.",
-      "Results now show only the brands the viewer has access to.",
-    ],
-    how: [
-      "Brand scoping is now enforced on every read and write. I rolled the checks out behind a flag, first in staging, then in production on July 22. A test matrix checks the access rules on each deploy.",
-      "During the rollout, service-to-service calls were over-rejected. I caught that and fixed it the same day. After production soaked, I removed the flag so the checks stay on. In October I deleted old unused routes that skipped these checks. Results now include only the brands the viewer has access to.",
+      "An audit found gaps in how our API scoped data to each brand. One flag flip was the fast option, but over-rejecting service-to-service callers was as real a risk as leaving a gap. So I closed it one route family at a time.",
+      "When I staged the enforcement flag on Jul 13, it broke 5 wildcard routes for M2M clients. I fixed only those routes the same day instead of rolling back, so it never reached prod.",
+      "I flipped prod on Jul 22 after a 48-hour staging soak. Once 401s, 403s and 5xx stayed flat, I deleted the killswitch and its fail-open branches, code first and then infra.",
+      "In October I deleted old unused routes, instead of patching them.",
     ],
   },
   {
@@ -47,60 +41,52 @@ export const contributions: Contribution[] = [
     headline: "People using our tools stopped hitting errors",
     number: '~1,664 "service unavailable" errors → 0 since Oct 13',
     did: [
-      "All of them came from one slow step at sign-in. I changed it to wait a few seconds and fail cleanly instead of erroring.",
-      "A frontend page froze on about 4% of visits on the day I measured. It now gives up on a slow call instead of freezing.",
-      "I fixed these in 3 codebases owned by different teams.",
-    ],
-    how: [
-      "Gateway access logs do not include the path. I grouped the errors by response body size. All ~1,664 \"service unavailable\" errors were the same size: a failed sign-in lookup. I added a 5 second wait for the user lookup and a clean timeout on the results deadline. Those errors have been 0 since Oct 13.",
-      "On the frontend, a slow fetch during server rendering froze the page on about 4% of visits the day I measured. I bounded the fetches so a slow call times out and the page still renders. I made these fixes in 3 codebases owned by different teams.",
+      "The product's hourly smoke tests kept going red on the automations pages. I split the failures by cause instead of treating them as one bug, and found three, in three teams' code.",
+      "The API Gateway access log has no path, so I grouped the 503s by response size. All 1,664 were the same 113-byte org lookup failure body from the user lookup at sign-in. I made our API wait up to 5 seconds for it inside the gateway deadline and return a clear error otherwise. 0 since Oct 13.",
+      "A storefront page hung on about 4% of its requests the day I measured. Prod logs showed normal browsers hitting it, not just our test account, so I treated it as a customer bug and put timeouts on the unbounded SSR fetches.",
+      "A request list in the task service timed out at 30 seconds. The suggested fix was a row limit plus an index. I tested it and it didn't help, because the real cost was a join across every request type, so I changed the query to filter by ids.",
     ],
   },
   {
     id: "safety-net-real",
     headline: "A bad release gets caught in minutes, not by a partner",
-    number: "my after-release check caught 3 broken production pages on Oct 14",
+    number: "My post-deploy check caught 3 broken prod routes on Oct 14",
     did: [
-      "On Oct 14, the check I built caught 3 pages failing because the release had skipped a database update. The next day I fixed the pipeline so releases can't skip them.",
-      'I also found that the team\'s main release check had "passed" 54 times without running. A real run takes about 85 seconds, and these took 2 to 5. I fixed it so it really runs. Turning it on for every release is in review.',
+      "The API test gate always showed green, so I looked at its run times. A real run takes about 85 seconds, and every pass took 2 to 5. A reusable-workflow condition had skipped it 54 times. I fixed the call path, and the PR that makes it run on every deploy is in review.",
+      "I also made an access test run against prod after every successful deploy.",
+      "On Oct 14 it caught 3 routes returning 500s. Main deploys diffed migrations from HEAD~1, so after a cancelled run a migration got skipped. The next day I changed the diff to start from the last successful run.",
     ],
     how: [
-      "Cancelled CI runs made the pipeline compute the database-update diff from the previous commit. That skipped a migration. On Oct 14 my after-release check caught 3 production pages failing for that reason. I changed the diff to start from the last successful deploy.",
-      "The team's main release check is an API test suite. Its call path sent no requests, so it reported a pass in 2 to 5 seconds. A real run takes about 85 seconds. That happened 54 times. I fixed the call path so the suite really runs. Turning it on for every release is in review.",
+      "The skipped runs sent no requests.",
     ],
   },
   {
     id: "failure-attribution",
     headline: "We can see why automations fail, so we fix the right thing",
-    number:
-      "35,259 failed actions traced to one bug → 0 since my fix went live Aug 26",
+    number: "35,259 failed actions traced to one bug → 0 since Aug 26",
     did: [
-      "Every failure was saved the same blank way, so no one could tell the causes apart. I made each failure record its reason.",
-      "The data pointed to one cause right away: duplicate records, 2,200 to 2,900 failed actions a day, about 85% of all failures.",
-      "I fixed the duplicate check so each brand gets its own result. There have been none since, across 117,000+ actions.",
+      'Thousands of asset actions failed every day, and each one was saved with an empty status and the driver\'s generic "Failed query" message. Guessing wasn\'t going to work, so my first PR changed no behavior: it walked the error cause chain and saved the SQL state and constraint name in their own columns.',
+      "Re-reading my own PR against its acceptance criteria, I found it logged the raw error one line before sanitizing it, which put org IDs and action config in the logs. I fixed both paths, added tests, and checked that they fail when the fix is reverted.",
+      "Once causes were recorded, about 85% of failures were one thing: SQLSTATE 23505 on a unique key that didn't include the org. The first org's asset won and every other org's failed.",
+      "I added the org to the key and fixed the enqueue. It went live Aug 26 at 22:00 UTC, and there have been 0 since across 117,000+ actions.",
     ],
     how: [
-      "Every failure used to land as an empty status and a generic driver message. I walked the full error cause chain and wrote the SQL state and constraint name into their own columns. One mapping feeds both the column and the metric.",
-      "Causes started recording on Aug 12. The dominant cause was SQLSTATE 23505 on a unique key that was too narrow (missing the org), so one brand's record collided with another's. That was 2,200 to 2,900 failed actions a day, about 85% of all failures, 35,259 in total.",
-      "I widened the unique key and enqueued one row per org. The fix went live Aug 26 at 22:00 UTC. The last duplicate was Aug 26 at 21:12 UTC. There have been none since, across 117,000+ actions.",
+      "One mapping feeds both the column and the metric. Causes started recording on Aug 12. That cause was 2,200 to 2,900 failed actions a day. The last duplicate was Aug 26 at 21:12 UTC.",
     ],
   },
   {
     id: "partitioning",
     headline: "Lower database costs that repeat every month",
-    number: "biggest table 82% smaller, 47 GB → 8.6 GB",
+    number: "Biggest table 82% smaller: 47 GB → 8.6 GB",
     did: [
-      "I measured what the table stored and found 93% of it was never read again, so I stopped saving it.",
-      "I split the table into 16 pieces, so a lookup reads one piece (1.5 GB at most) instead of all 47 GB.",
-      "I fixed a query that did 11,000 times more work than it needed under heavy load.",
-      "During the switch, a safety check I built stopped a data mismatch before it reached production.",
-      "The old copy is kept for rollback for now. Deleting it frees the 47 GB.",
+      "The ticket asked whether to move the state table into the data warehouse. I mapped every read and write first. The move didn't fit: writes share a transaction with the versions table, and some reads aggregate 400k+ JSONB rows. But the audit showed 93% of rows were non-triggered and never read anywhere.",
+      "So I stopped writing non-triggered rows and HASH-partitioned the table by sensor_id into 16, so a per-sensor query hits one partition (1.5 GB at most).",
+      "The first cutover failed: copying 39M rows blew the migration Lambda's 300-second limit. Only triggered rows are ever read, so I copied just those, about 3%, and it fit.",
+      "On the second try, the drift guard I built found five columns created as varchar(255) where prod had unbounded varchar. It aborted the swap and rolled back cleanly. I fixed the types and finished the cutover with the workers paused. The old table stays as a rollback copy for now.",
+      "Separately, when batches got stuck in prod, EXPLAIN showed the claim query's OR clause forcing a seq scan and sort (cost ~217,000 vs ~19 on the right partial index). I split it into two queries.",
     ],
     how: [
-      "I measured what the table stored. 93% of rows were written on every run and never read again. I stopped saving those rows. The table went from about 40 million rows to 2.3 million, and from 47 GB to 8.6 GB.",
-      "I hash-partitioned it into 16 pieces. A lookup now reads one piece, 1.5 GB at most, instead of all 47 GB.",
-      "Copying all ~40 million rows could not finish in the migration window. Because 93% of rows are never read, the copy only needed the rest. A safety check ran before the swap. It found a type mismatch between the old table and the new one and aborted, so the mismatch never reached production. I aligned the types and completed the switch. The old table is kept as a rollback copy (47 GB, still present Nov 2). Deleting it frees the 47 GB.",
-      "Separately, a query under heavy load did 11,000 times more work than it needed. The plan was a full scan and sort. I split the query so it uses the index.",
+      "The table went from about 40 million rows to 2.3 million. The old copy is still present as of Nov 2. Deleting it frees the 47 GB.",
     ],
   },
 ];
