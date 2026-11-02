@@ -44,8 +44,8 @@ export function Overview({ bullets, repoTally, statusBreakdown, values, valueTal
         })}
       </div>
       <p className="value-tally-note">
-        Points are the sum of that value's 0–3 scores across all nine
-        contributions; every value is earned by multiple pieces of work, which is
+        Points are the sum of that value's 0–3 scores across every
+        contribution in the matrix; every value is earned by multiple pieces of work, which is
         the point of scoring them as a matrix rather than assigning one owner each.
       </p>
 

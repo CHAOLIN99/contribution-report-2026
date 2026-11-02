@@ -75,8 +75,30 @@ export interface ValueRationale {
   line: ReactNode;
 }
 
+/** What a contribution changed for Pattern as a business, and why that change matters. */
+export interface BusinessImpact {
+  /** The concrete outcome for the company — what is now true that wasn't before. */
+  outcome: ReactNode;
+  /** Why the outcome is essential, not nice-to-have. */
+  whyEssential: ReactNode;
+}
+
+/** A company-level impact pillar, rolled up from several contributions. */
+export interface ImpactPillar {
+  id: string;
+  headline: string;
+  metric: string;
+  metricLabel: string;
+  outcome: ReactNode;
+  whyEssential: ReactNode;
+  /** Ids of the cases/themes below that back this pillar. */
+  evidence: { id: string; label: string }[];
+}
+
 /** Fields every contribution (deep case study or theme cluster) shares for the matrix. */
 export interface Scored {
+  /** Company-level impact of this contribution. */
+  impact: BusinessImpact;
   /** How this contribution rates on each of the four values. */
   scores: ValueScores;
   /** One line per value it earns, ordered strongest-first; drives the per-card readout. */

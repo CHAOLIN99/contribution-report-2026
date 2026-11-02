@@ -2,6 +2,7 @@ import type { CaseStudy, ValueDef, ValueId } from "../types";
 import { PrTable } from "./PrTable";
 import { CompareBar } from "./charts";
 import { ValueScorecard } from "./ValueScorecard";
+import { ImpactBlock } from "./ImpactBlock";
 
 export function CaseStudyCard({
   study,
@@ -23,6 +24,8 @@ export function CaseStudyCard({
         <span className="tag">In plain terms</span>
         <p>{study.plainSummary}</p>
       </div>
+
+      <ImpactBlock impact={study.impact} />
 
       <ValueScorecard item={study} values={values} order={order} />
 

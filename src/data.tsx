@@ -11,6 +11,9 @@ import type {
   ValueId,
 } from "./types";
 import { pillLabel } from "./types";
+import { existingImpact, recentThemes } from "./impact";
+
+export { pillars } from "./impact";
 
 export const values: ValueDef[] = [
   {
@@ -46,64 +49,59 @@ export const values: ValueDef[] = [
 ];
 
 export const stats: StatItem[] = [
-  { value: "151", label: "Total PRs" },
-  { value: "130", label: "Merged" },
-  { value: "5", label: "Still open" },
-  { value: "16", label: "Closed, unmerged" },
-  { value: "+91,438", label: "Lines added", variant: "add" },
-  { value: "-13,620", label: "Lines removed", variant: "del" },
+  { value: "275", label: "Total PRs" },
+  { value: "211", label: "Merged" },
+  { value: "22", label: "Still open" },
+  { value: "109", label: "ClickUp tickets closed" },
+  { value: "+114,360", label: "Lines added", variant: "add" },
+  { value: "-15,680", label: "Lines removed", variant: "del" },
 ];
 
 export const repoTally = [
-  { repo: "sensors", count: 123 },
-  { repo: "pattern-exp", count: 13 },
-  { repo: "agents", count: 7 },
+  { repo: "sensors", count: 209 },
+  { repo: "pattern-exp", count: 28 },
+  { repo: "sensors-workflow-builder", count: 17 },
+  { repo: "agents", count: 8 },
   { repo: "pi-toolsmith", count: 6 },
-  { repo: "sensors-workflow-builder", count: 1 },
-  { repo: "data-airflow", count: 1 },
+  { repo: "white-glove", count: 5 },
+  { repo: "data-airflow", count: 2 },
 ];
 
 export const statusBreakdown = [
-  { label: pillLabel.merged, count: 130, variant: "merged" as const },
-  { label: pillLabel.open, count: 5, variant: "open" as const },
-  { label: pillLabel.unmerged, count: 16, variant: "unmerged" as const },
+  { label: pillLabel.merged, count: 211, variant: "merged" as const },
+  { label: pillLabel.open, count: 22, variant: "open" as const },
+  { label: pillLabel.unmerged, count: 42, variant: "unmerged" as const },
 ];
 
 export const overviewBullets = [
   <>
-    <b>Partner Obsession</b> — the widest axis: all sixteen work items score on
-    it, because protecting partner brands' data, uptime, and product experience
-    is the throughline. Strongest in the org/tenancy hardening, the
-    recommendation access gate, and the database-credential migration.
+    <b>Partner Obsession</b>: the widest axis. Every contribution scores on it,
+    because protecting partner brands' data, uptime, and automations is the
+    throughline. It is strongest in brand-data separation, the fixes for
+    production errors real users saw, and unblocking the automations that act
+    for brands.
   </>,
   <>
-    <b>Data Fanatics</b> — measuring before changing. Strongest in the two
-    performance fixes, in making pipeline failures <em>attributable</em> before
-    trying to fix them, and in the alert-noise work, where a 1,022-event
-    baseline set the target and picked the metric.
+    <b>Data Fanatics</b>: measuring before changing. It is strongest in the
+    performance fixes, in making failures attributable before fixing them, and
+    in re-querying production before trusting a ticket. That step caught a
+    migration that would have failed to deploy and a release gate that had never
+    run.
   </>,
   <>
-    <b>Team of Doers</b> — following through across other teams' repos and
-    across long rollouts nobody was watching. Strongest in the IAM
-    database-credential migration (one service per apply, soak clocks as merge
-    gates) and in the MCP and source-app work landed across two-to-three
-    team-owned codebases at once.
+    <b>Team of Doers</b>: following through across seven repos owned by several
+    teams. That includes long rollouts nobody else was watching, like the
+    one-service-at-a-time credential migration, and fixes landed in other teams'
+    services when that's where the bug lived.
   </>,
   <>
-    <b>Game Changers</b> — undoing sunk-cost work when the evidence says so.
-    Strongest in the deploy gate (deleted ~1,000 lines mid-project), reverting
-    an entire half-built smoke suite rather than inheriting its scaffolding, and
-    retiring legacy password auth and dead flags before they caused an incident.
+    <b>Game Changers</b>: undoing sunk-cost work when the evidence says so. That
+    means deleting ~1,000 lines mid-project, reverting a half-built test suite,
+    proving "green" checks weren't real, and deleting insecure routes rather than
+    patching them.
   </>,
 ];
 
-/** Per-value roll-up derived from the matrix: weighted points and how many contributions touch each value. */
-export const valueTally = [
-  { id: "partner-obsession" as const, weighted: 36, touches: 16, primaries: 4 },
-  { id: "data-fanatics" as const, weighted: 29, touches: 14, primaries: 5 },
-  { id: "team-of-doers" as const, weighted: 30, touches: 16, primaries: 4 },
-  { id: "game-changers" as const, weighted: 27, touches: 15, primaries: 3 },
-];
 
 function prRef(label: string, url: string) {
   return (
@@ -330,7 +328,7 @@ const case7MetricFlow: MetricFlow = {
   note: <>staging groups rerouted to a stage channel, not silenced</>,
 };
 
-export const cases: CaseStudy[] = [
+const baseCases: Omit<CaseStudy, "impact">[] = [
   {
     id: "partitioning",
     navLabel: "ACU blow-up",
@@ -1770,7 +1768,7 @@ export const cases: CaseStudy[] = [
   },
 ];
 
-export const themes: ThemeSection[] = [
+const baseThemes: Omit<ThemeSection, "impact">[] = [
   {
     id: "mcp-integration",
     matrixLabel: "MCP / agent integration",
@@ -3276,6 +3274,15 @@ export const themes: ThemeSection[] = [
   },
 ];
 
+function withImpact<T extends { id: string }>(item: T) {
+  const impact = existingImpact[item.id];
+  if (!impact) throw new Error(`missing impact for ${item.id}`);
+  return { ...item, impact };
+}
+
+export const cases: CaseStudy[] = baseCases.map(withImpact);
+export const themes: ThemeSection[] = [...recentThemes, ...baseThemes.map(withImpact)];
+
 /** The evaluation matrix, in the same order the detail cards appear. */
 export const matrixRows: MatrixRow[] = [...cases, ...themes].map(
   (c: Scored & { id: string; matrixLabel: string; ticket?: string }) => ({
@@ -3295,19 +3302,20 @@ export const valueOrder: ValueId[] = [
   "game-changers",
 ];
 
+/** Per-value roll-up derived from the matrix: weighted points and how many contributions touch each value. */
+export const valueTally = valueOrder.map((id) => ({
+  id,
+  weighted: matrixRows.reduce((sum, r) => sum + r.scores[id], 0),
+  touches: matrixRows.filter((r) => r.scores[id] > 0).length,
+  primaries: matrixRows.filter((r) => r.primary === id).length,
+}));
+
 export const repoBreakdown: RepoBreakdownRow[] = [
-  { repo: "sensors", total: 123, merged: 111, open: 4, closed: 8, added: 78003, removed: 10963 },
-  { repo: "pattern-exp", total: 13, merged: 9, open: 1, closed: 3, added: 4704, removed: 1465 },
-  { repo: "agents", total: 7, merged: 3, open: 0, closed: 4, added: 2303, removed: 357 },
+  { repo: "sensors", total: 209, merged: 171, open: 13, closed: 25, added: 92494, removed: 12428 },
+  { repo: "pattern-exp", total: 28, merged: 19, open: 1, closed: 8, added: 7575, removed: 1775 },
+  { repo: "sensors-workflow-builder", total: 17, merged: 9, open: 4, closed: 4, added: 8476, removed: 254 },
+  { repo: "agents", total: 8, merged: 3, open: 1, closed: 4, added: 2491, removed: 378 },
   { repo: "pi-toolsmith", total: 6, merged: 6, open: 0, closed: 0, added: 1959, removed: 636 },
-  {
-    repo: "sensors-workflow-builder",
-    total: 1,
-    merged: 1,
-    open: 0,
-    closed: 0,
-    added: 3869,
-    removed: 15,
-  },
-  { repo: "data-airflow", total: 1, merged: 0, open: 0, closed: 1, added: 600, removed: 184 },
+  { repo: "white-glove", total: 5, merged: 3, open: 2, closed: 0, added: 762, removed: 24 },
+  { repo: "data-airflow", total: 2, merged: 0, open: 1, closed: 1, added: 603, removed: 185 },
 ];

@@ -1,6 +1,7 @@
 import type { ThemeSection, ValueDef, ValueId } from "../types";
 import { PrTable } from "./PrTable";
 import { ValueScorecard } from "./ValueScorecard";
+import { ImpactBlock } from "./ImpactBlock";
 
 export function ThemeSectionCard({
   section,
@@ -21,6 +22,8 @@ export function ThemeSectionCard({
         <span className="tag">In plain terms</span>
         <p>{section.plainSummary}</p>
       </div>
+
+      <ImpactBlock impact={section.impact} />
 
       <ValueScorecard item={section} values={values} order={order} />
 

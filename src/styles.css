@@ -944,3 +944,57 @@ table.matrix { border-collapse: collapse; width: 100%; min-width: 640px; }
 .flow-details[open] summary::before { transform: rotate(90deg); }
 .flow-details[open] summary { margin-bottom: 6px; }
 .flow-details .flow { margin-top: 4px; }
+
+/* ---- business impact (per card) ---- */
+.impact-block {
+  border-left: 3px solid var(--signal);
+  background: var(--signal-bg);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin: 0 0 18px;
+  display: grid;
+  gap: 8px;
+}
+.impact-row { display: flex; gap: 10px; align-items: flex-start; }
+.impact-row .tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  color: var(--signal);
+  flex: 0 0 132px;
+  padding-top: 2px;
+}
+.impact-row p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--text); max-width: 70ch; }
+@media (max-width: 640px) {
+  .impact-row { flex-direction: column; gap: 2px; }
+  .impact-row .tag { flex-basis: auto; }
+}
+
+/* ---- company impact pillars ---- */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 0 0 40px;
+}
+.pillar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+.pillar-metric { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.pillar-n { font-size: 26px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+.pillar-l { font-size: 12.5px; color: var(--muted); }
+.pillar h3 { font-family: Georgia, "Iowan Old Style", serif; font-size: 17px; margin: 0 0 8px; font-weight: 600; }
+.pillar-outcome { font-size: 14px; line-height: 1.55; margin: 0 0 8px; }
+.pillar-why { font-size: 13.5px; line-height: 1.55; color: var(--muted); margin: 0 0 10px; }
+.pillar-why b { color: var(--text); }
+.pillar-evidence { font-size: 12.5px; color: var(--faint); margin: auto 0 0; }
+.pillar-evidence a { color: var(--accent); text-decoration: none; }
+.pillar-evidence a:hover { text-decoration: underline; }
