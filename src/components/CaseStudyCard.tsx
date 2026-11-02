@@ -3,21 +3,27 @@ import { PrTable } from "./PrTable";
 import { CompareBar } from "./charts";
 import { ValueScorecard } from "./ValueScorecard";
 import { ImpactBlock } from "./ImpactBlock";
+import { RankBadge } from "./RankBadge";
 
 export function CaseStudyCard({
   study,
   values,
   order,
+  rank,
+  score,
 }: {
   study: CaseStudy;
   values: ValueDef[];
   order: ValueId[];
+  rank: number;
+  score: number;
 }) {
   return (
     <div className={`case case-accent-${study.primary}`} id={study.id}>
       <div className="case-head">
         <h3>{study.title}</h3>
         <span className="case-ticket">{study.ticket}</span>
+        <RankBadge rank={rank} score={score} />
       </div>
       <p className="case-lead">{study.lead}</p>
       <div className="plain-summary">

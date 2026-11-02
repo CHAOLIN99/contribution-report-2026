@@ -12,6 +12,7 @@ import type {
 } from "./types";
 import { pillLabel } from "./types";
 import { existingImpact, recentThemes } from "./impact";
+import { rankedIds, rankOf, rubrics, total } from "./ranking";
 
 export { pillars } from "./impact";
 
@@ -3283,8 +3284,27 @@ function withImpact<T extends { id: string }>(item: T) {
 export const cases: CaseStudy[] = baseCases.map(withImpact);
 export const themes: ThemeSection[] = [...recentThemes, ...baseThemes.map(withImpact)];
 
+/** Every contribution as a card, in rank order (value to Pattern, highest first). */
+export type RankedCard =
+  | { kind: "case"; item: CaseStudy; rank: number; score: number }
+  | { kind: "theme"; item: ThemeSection; rank: number; score: number };
+
+export const rankedCards: RankedCard[] = [
+  ...cases.map((item) => ({ kind: "case" as const, item })),
+  ...themes.map((item) => ({ kind: "theme" as const, item })),
+]
+  .map((c) => ({ ...c, rank: rankOf(c.item.id), score: total(rubrics[c.item.id]) }) as RankedCard)
+  .sort((a, b) => a.rank - b.rank);
+
+if (rankedCards.length !== rankedIds.length) throw new Error("ranking and cards are out of sync");
+
+/** Card title per id, for the ranking table. */
+export const cardTitles: Record<string, string> = Object.fromEntries(
+  rankedCards.map((c) => [c.item.id, c.item.title])
+);
+
 /** The evaluation matrix, in the same order the detail cards appear. */
-export const matrixRows: MatrixRow[] = [...cases, ...themes].map(
+export const matrixRows: MatrixRow[] = rankedCards.map((c) => c.item).map(
   (c: Scored & { id: string; matrixLabel: string; ticket?: string }) => ({
     id: c.id,
     label: c.matrixLabel,

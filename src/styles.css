@@ -998,3 +998,43 @@ table.matrix { border-collapse: collapse; width: 100%; min-width: 640px; }
 .pillar-evidence { font-size: 12.5px; color: var(--faint); margin: auto 0 0; }
 .pillar-evidence a { color: var(--accent); text-decoration: none; }
 .pillar-evidence a:hover { text-decoration: underline; }
+
+/* ---- ranking ---- */
+.rank-badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 3px 10px;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.rubric {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+}
+.rubric-q {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.rubric-q p { margin: 0 0 4px; font-size: 13.5px; line-height: 1.5; }
+.rubric-head span { color: var(--faint); font-size: 12px; }
+.rubric-scale { color: var(--muted); font-size: 12.5px !important; }
+.rank-table td.num { text-align: center; font-variant-numeric: tabular-nums; }
+.rank-table td.title a { color: var(--accent); text-decoration: none; }
+.rank-table td.title a:hover { text-decoration: underline; }
+.rank-table td.why { color: var(--muted); font-size: 13px; min-width: 240px; }
+#ranking + .section-sub + .rubric + .table-wrap { margin-bottom: 40px; }
+
+/* ---- phone width: nothing scrolls sideways ---- */
+.repo-summary { overflow-x: auto; }
+@media (max-width: 640px) {
+  .case-ticket { white-space: normal; overflow-wrap: anywhere; }
+}

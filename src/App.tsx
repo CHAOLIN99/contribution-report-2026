@@ -7,6 +7,7 @@ import { ValueLens } from "./components/ValueLens";
 import { RepoBreakdownTable } from "./components/RepoBreakdownTable";
 import { JumpNav } from "./components/charts";
 import { CompanyImpact } from "./components/CompanyImpact";
+import { RankingTable } from "./components/RankingTable";
 import {
   stats,
   repoTally,
@@ -16,14 +17,15 @@ import {
   valueTally,
   valueOrder,
   matrixRows,
-  cases,
-  themes,
+  rankedCards,
+  cardTitles,
   repoBreakdown,
   pillars,
 } from "./data";
 
 const navItems = [
   { id: "impact", label: "Impact on Pattern" },
+  { id: "ranking", label: "Ranking" },
   { id: "overview", label: "Overview" },
   { id: "matrix", label: "The matrix" },
   { id: "work", label: "Contributions" },
@@ -65,6 +67,16 @@ export function App() {
       </p>
       <CompanyImpact pillars={pillars} />
 
+      <h2 className="section-title" id="ranking">
+        Every contribution, ranked by value to Pattern
+      </h2>
+      <p className="section-sub">
+        Each contribution answers four questions, and the points add up to a score out of 10.
+        Ties go to higher business stakes, then to stronger proof in production. The cards
+        further down follow this order.
+      </p>
+      <RankingTable labels={cardTitles} />
+
       <div id="overview">
         <Overview
           bullets={overviewBullets}
@@ -88,16 +100,30 @@ export function App() {
         The contributions
       </h2>
       <p className="section-sub">
-        The seven deep-dive investigations come first. Next are the six clusters from
-        Aug 29 to Nov 2, then the earlier clusters. Each one has an "Impact on Pattern"
-        read-out and a four-value score.
+        In rank order, highest value to Pattern first. Each card shows its rank and score,
+        an "Impact on Pattern" read-out, and a four-value score.
       </p>
-      {cases.map((study) => (
-        <CaseStudyCard study={study} values={values} order={valueOrder} key={study.id} />
-      ))}
-      {themes.map((section) => (
-        <ThemeSectionCard section={section} values={values} order={valueOrder} key={section.id} />
-      ))}
+      {rankedCards.map((c) =>
+        c.kind === "case" ? (
+          <CaseStudyCard
+            study={c.item}
+            values={values}
+            order={valueOrder}
+            rank={c.rank}
+            score={c.score}
+            key={c.item.id}
+          />
+        ) : (
+          <ThemeSectionCard
+            section={c.item}
+            values={values}
+            order={valueOrder}
+            rank={c.rank}
+            score={c.score}
+            key={c.item.id}
+          />
+        )
+      )}
 
       <h2 className="section-title" id="by-value" style={{ marginTop: 40 }}>
         The same work, read back by value
@@ -149,7 +175,8 @@ export function App() {
           (superseded, split into another PR, or abandoned). The diagnose → plan → solve
           narratives are reconstructed from what each PR's own description states about root
           cause, prior failed attempts, and review findings — not from a separate incident
-          tracker. The four-value scores (0–3 on each axis) are my own read of how strongly
+          tracker. The 1–10 ranking adds four scores (business stakes 0–3, proven in production 0–3,
+          size 0–2, reach 0–2) and is my own judgment of value to Pattern. The four-value scores (0–3 on each axis) are my own read of how strongly
           each piece of work demonstrates each value, written for a non-technical reader; the
           underlying PRs, dates, and diffs are unchanged from the technical record above.
         </p>
