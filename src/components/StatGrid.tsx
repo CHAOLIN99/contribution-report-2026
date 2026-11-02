@@ -5,7 +5,7 @@ export function StatGrid({ stats }: { stats: StatItem[] }) {
     <div className="stat-grid">
       {stats.map((stat) => (
         <div className="stat" key={stat.label}>
-          <div className={`n${stat.variant ? ` ${stat.variant}` : ""}`}>{stat.value}</div>
+          <div className="n">{stat.value}</div>
           <div className="l">{stat.label}</div>
         </div>
       ))}
